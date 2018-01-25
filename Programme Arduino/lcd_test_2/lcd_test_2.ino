@@ -1,3 +1,5 @@
+//de mémoire, c'est celui qui marche
+
 #include <Wire.h>
 #include<LiquidCrystal_I2C.h>
 
@@ -19,5 +21,5 @@ lcd.print("Serial number :");
 lcd.setCursor(0,1);
 lcd.print(randNumber);
 lcd.setCursor(1,1);
-lcd.print("SF85Z7");
+lcd.print("SF85ZS7");
 }
