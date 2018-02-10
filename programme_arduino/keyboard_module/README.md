@@ -1,5 +1,9 @@
 # Keyboard module for the bomb defuse game
 
+<img src="circuit/keyboard_module_real.jpg" width="350" />
+
+A video of the module in action can be found [here](https://youtu.be/Le4A3sgtfqI)!
+
 ## Dependencies
 
 - [AnalogMultiButton](https://github.com/dxinteractive/AnalogMultiButton)
@@ -7,6 +11,8 @@
 ## Building the circuit
 
 See the circuit layout in `circuit/circuit.png`.
+
+<img src="circuit/circuit.png" width="450" />
 
 Alternatively, you can view the circuit on [Tinkercad](https://tinkercad.com). Search for 'defuse_keyboard_module' to find the circuit.
 
