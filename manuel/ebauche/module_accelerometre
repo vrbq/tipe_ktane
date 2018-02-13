@@ -1,0 +1,44 @@
+Pour désactiver ce module, suivez les étapes suivantes :
+
+Nota Bene :
+  - une erreur réinitialisera le module
+  - tous les mouvements a effectuer seront d'une distance approximative de 20 cm.
+  - mémorisez toutes les informations présentes (LCD et couleur de la LED) peut vous être utile.
+  
+  
+  ETAPE 0 :
+Votre co-équipier doit prendre la bombe dans ses mains, à une hauteur stable.
+Cette hauteur sera la "hauteur de référence" : mémorisez la bien !
+Appuyez sur le bouton positionné sur la droite pour commencer.
+
+  ETAPE 1 :
+Si l'écran LCD affiche un 1, déplacez le cube vers la gauche.
+Si l'écran LCD affiche un 2, déplacez le cube vers le bas.
+Si l'écran LCD affiche un 3, déplacez le cube vers la droite.
+Si l'écran LCD affiche un 4, déplacez le cube vers la gauche.
+
+  ETAPE 2 :
+Si l'écran LCD affiche un 1, ne faites aucun mouvement et appuyez sur le bouton situé sur la face droite du cube.
+Si l'écran LCD affiche un 2, déplacez le cube vers le haut.
+Si l'écran LCD affiche un 3, refaites le même mouvement qu'en étape 1.
+Si l'écran LCD affiche un 4, déplacez le cube vers la droite.
+
+  ETAPE 3 :
+Si l'écran LCD affiche un 1, appuyez sur le bouton situé sur la face gauche du cube.
+Si l'écran LCD affiche un 2, appuyez sur le bouton situé sur la face de même couleur que la LED.
+Si l'écran LCD affiche un 3, déplacez le cube vers le haut.
+Si l'écran LCD affiche un 4, refaites le même mouvement qu'en étape 1.
+
+  ETAPE 4 :
+Si l'écran LCD affiche un 1, refaites le même mouvement qu'en étape 1.
+Si l'écran LCD affiche un 2, déplacez le cube vers le bas.
+Si l'écran LCD affiche un 3, appuyez sur le bouton situé sur le haut du cube.
+Si l'écran LCD affiche un 4, appuyez sur le bouton situé sur la face de même couleur que la LED.
+
+
+  ETAPE 5 :
+Si l'écran LCD affiche un 1, appuyez sur le bouton situé sur la face de même couleur que la LED en étape 1.
+Si l'écran LCD affiche un 2, appuyez sur le bouton situé sur la face de même couleur que la LED en étape 3.
+Si l'écran LCD affiche un 3, appuyez sur le bouton situé sur la face de même couleur que la LED en étape 4.
+Si l'écran LCD affiche un 4, appuyez sur le bouton situé sur la face de même couleur que la LED en étape 2.
+

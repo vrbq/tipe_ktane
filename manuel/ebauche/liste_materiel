@@ -1,0 +1,27 @@
+    Module BOUTON :
+- un bouton poussoir //bouton principal
+- une LED RGB //variation de couleur pour indication
+
+    Module ACCELEROMETRE :
+ - 3 boutons poussoir //sur chaque face du cube pour la résolution énigme
+ - un accéléromètre //mouvement pour résolution énigme (8 pins) ?
+ - un écran LCD //peut être petit, juste pour afficher un chiffre
+    -> on pourrait d'ailleurs le remplacer par 4 leds qui montre des chiffres
+    
+ 	Module Films :
+- un ecran LCD //afficher noms des films
+- 2 boutons poussoirs //faire defiler les noms des films
+- 1 bouton poussoir //bouton SUBMIT
+
+	Module Morse :
+- une Led //faire le morse
+- un ecran LCD //afficher les chiffres, ecran LCD peut etre tout petit, juste un chiffre suffit
+- 2 boutons poussoirs //faire defiler les différents chiffres
+- 1 bouton poussoir //bouton SUBMIT
+
+
+
+    AUTRES :
+- un écran LCD //affichage du numéro de série pour créer une bombe random
+- 2 LED simple //allumage des LEDs des mentions module bouton
+- écran LCD (ou juste à chiffres) pour le Timer

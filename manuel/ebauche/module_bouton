@@ -1,0 +1,20 @@
+Pour désactiver ce module, reportez aux conditions suivantes :
+
+1) Si la LED témoin est rouge et que le numéro de série contient exactement 1 voyelle, appuyez 2 fois sur le bouton.
+2) Si il y a un indicateur portant la mention "ASTROLOGIE" allumé, appuyez 1 fois courtement sur le bouton.
+3) Si la LED témoin est jaune, restez appuyer sur le bouton et reportez vous à la section ci-dessous.
+4) S'il n'y a pas de consonnes dans le numéro de série et si la LED témoin est verte, appuyez 2 fois sur le bouton.
+5) Si la LED témoin est rouge et qu'il y a un indicateur portant la mention "KAYAK" éteint, appuyez 1 fois courtement sur le bouton.
+6) Si la LED témoin est verte et qu'il n'y pas de chiffres premiers dans le numéro de série, restez appuyer sur le bouton 
+	et reportez vous à la section ci-dessous.
+7) Si aucun des cas ci-dessus ne convient, restez appuyer sur le bouton et reportez vous à la section ci-dessous.
+
+
+
+Lorsque vous restez appuyer sur le bouton, la LED témoin va changer de couleur régulierement.
+Vous devrez alors appuyez a un moment spécifique. Ne relâchez pas tout de suite !
+
+1) Si la somme de tous les chiffres du numéro de série est pair : relâchez quand la LED est violette.
+2) S'il y a exactement un chiffre premier dans le numéro de série : relâchez quand la LED est cyan.
+3) S'il n'y a pas de consonne dans le numéro de série : relâchez quand la LED est orange.
+4) Sinon, relâchez quand la LED est cyan.

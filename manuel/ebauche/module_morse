@@ -1,0 +1,53 @@
+Pour désactiver ce module, votre partenaire va vous communiquez des signaux en morse.
+A vous de reconnaitre les lettres , puis un mot fourni dans le tableau ci-dessous
+Une fois le mot identifié, réglez le potentiomètre sur le chiffre correspondant et appuyer sur le bouton "OK".
+
+
+  Grille lettres en morse :
+A  .-
+B  -...
+C  -.-.
+D  -..
+E  .
+F  ..-.
+G  --.
+H  ....
+I  ..
+J  .---
+K  -.-
+L  .-..
+M  --
+N  -.
+O  ---
+P  .--.
+Q  --.-
+R  .-.
+S  ...
+T  -
+U  ..-
+V  ...-
+W  .--
+X  -..-
+Y  -.--
+Z  --..
+
+
+  Grille de mots :
+Toto : position 1
+Chimie : position 2
+Tintin : position 3
+Eponge : position 4
+Marty : position 5
+Maths : position 6
+Plage : position 7
+Neymar : position 8
+Tipe : position 9
+
+
+
+
+
+
+
+//Liens utiles :
+https://morsecode.scphillips.com/translator.html

@@ -1,0 +1,33 @@
+Trouvez le bon film correspondant à la description trouvée pour décoder ce module !
+
+  Si la somme des chiffres du numéro de série est paire : //A
+  Alors le titre du film cherché comporte un animal
+  
+  Si le produit des chiffres premiers est inférieur à 17 : //B
+  Alors le film cherché est en 3D / dessin-animé
+  
+  Si il y a autant de consonnes que de voyelles dans le numéro de série : //C
+  Alors le film cherché a fait l'objet d'au moins une suite
+  
+  Si le produit de tous les chiffres est supérieur à 125 : //D
+  Alors il y a eu la mort d'un oncle ou d'une mère présente dans le film
+  
+  Si la somme des chiffres impairs du numéro de série est impaire : //E
+  Alors le personnage principal du film a été incarné par plusieurs acteurs
+  
+  Si il y exactement 1 voyelle dans le numéro de série : //F
+  Alors le film cherché est un film de Quentin Tarantino
+  
+  
+//Faire un diagramme de gant !! 
+  
+// LISTE FINALE :
+- Spider Man
+- Bambi
+- James Bond
+- Batman
+- Kill Bill
+- Pulp Fiction
+- La haut
+- Le Parrain
+- Inception
