@@ -1,0 +1,13 @@
+Le bouton:::::::::::::::::::::
+int bouton = 2;
+int buttonstate  = 0;
+==>setup
+pinMode(bouton, INPUT);
+==> void loop
+buttonstate = digitalRead(bouton);
+  if (buttonstate == LOW){
+    Serial.print("low");
+  } 
+  else{
+    Serial.print("high");
+  }
