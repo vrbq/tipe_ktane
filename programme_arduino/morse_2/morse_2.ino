@@ -1,5 +1,7 @@
 const int led = 9;      // On attribue le pin sur lequel on a branché l'anode de la led  !!! IMPORTANT : On oublie pas de mettre une résistance !!!
 const int temps = 250;   // Durée d'un point
+const int bouton = 6;
+boolean  buttonstate;
 int alea =0;
 
 String message = "";  // Ne pas mettre d'accent dans le message
@@ -11,44 +13,45 @@ void setup() {
   pinMode(led, OUTPUT); // On définit le pin "led" en sortie
   alea = random(1,9);
   Serial.println(alea);
-  
-  if (alea == 1){
-    message = "TOTO";
-    Serial.println(message);
+  switch (alea) {
+    case 1:
+      message = "TOTO";
+      Serial.println(message);
+      break;
+    case 2:
+      message = "CHIMIE";
+      Serial.println(message);
+      break;
+    case 3:
+      message = "TINTIN";
+      Serial.println(message);
+      break;
+    case 4:
+      message = "EPONGE";
+      Serial.println(message);
+      break;
+    case 5:
+      message = "MARTY";
+      Serial.println(message);
+      break;
+    case 6:
+      message = "MATHS";
+      Serial.println(message);
+      break;
+    case 7:
+      message = "PLAGE";
+      Serial.println(message);
+      break;
+    case 8:
+      message = "NEYMAR";
+      Serial.println(message);
+      break;
+    case 9:
+      message = "TIPE";
+      Serial.println(message);
+      break; 
   }
-  else if (alea == 2){
-    message = "CHIMIE";
-    Serial.println(message);
-  }
-  else if (alea == 3){
-    message = "TINTIN";
-    Serial.println(message);
-  }
-  else if (alea == 4){
-    message = "EPONGE";
-    Serial.println(message);
-  }
-  else if (alea == 5){
-    message = "MARTY";
-    Serial.println(message);
-  }
-  else if (alea == 6){
-    message = "MATHS";
-    Serial.println(message);
-  }
-  else if (alea == 7){
-    message = "PLAGE";
-    Serial.println(message);
-  }
-  else if (alea == 8){
-    message = "NEYMAR";
-    Serial.println(message);
-  }
-  else{
-    message = "TIPE";
-    Serial.println(message);
-  }
-  alea = random(9);
+
   // Ne pas modifier le code ci-dessous si vous ne savez pas ce que vous faites.
   
   message.toUpperCase();  // On transcrit tout le message en majuscule
@@ -108,16 +111,23 @@ void setup() {
 
   // On remplace maintenant ";|" par "|" dans le message transformé car la fin de lettre ne sert à rien avant un autre mot
   message.replace(";|","|");
+  pinMode(bouton, INPUT);
   
 
 }
 
 // the loop function runs over and over again forever
 void loop() {
+  buttonstate = digitalRead(bouton);
+  while (buttonstate == LOW){
  // SequencageMorse(debut);     // On lance le séquencage morse du début de message
-  SequencageMorse(message);   // On séquence notre message à la suite
+    SequencageMorse(message);   // On séquence notre message à la suite
  // SequencageMorse(fin);       // On indique la fin du message
-  
+    Serial.print("nique ta race");
+  }
+  alea = random(1,9);
+  Serial.println(alea);
+    
 }
 
 // Fonctions
@@ -157,3 +167,5 @@ void point(){
   digitalWrite(led, LOW);    // LOW = Eteind
   delay(temps);
 }
+
+
