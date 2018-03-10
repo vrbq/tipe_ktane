@@ -1,15 +1,15 @@
 const int led = 9;      // On attribue le pin sur lequel on a branché l'anode de la led  !!! IMPORTANT : On oublie pas de mettre une résistance !!!
 const int temps = 250;   // Durée d'un point
-const int bouton = 6;
-boolean  buttonstate;
-int alea =0;
+long alea;
 
 String message = "";  // Ne pas mettre d'accent dans le message
 
 // the setup function runs once when you press reset or power the board
 void setup() {
+  
   Serial.begin(9600);
   Serial.print("hello world");
+  randomSeed(analogRead(0));
   pinMode(led, OUTPUT); // On définit le pin "led" en sortie
   alea = random(1,9);
   Serial.println(alea);
@@ -111,23 +111,16 @@ void setup() {
 
   // On remplace maintenant ";|" par "|" dans le message transformé car la fin de lettre ne sert à rien avant un autre mot
   message.replace(";|","|");
-  pinMode(bouton, INPUT);
   
 
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  buttonstate = digitalRead(bouton);
-  while (buttonstate == LOW){
  // SequencageMorse(debut);     // On lance le séquencage morse du début de message
-    SequencageMorse(message);   // On séquence notre message à la suite
+  SequencageMorse(message);   // On séquence notre message à la suite
  // SequencageMorse(fin);       // On indique la fin du message
-    Serial.print("nique ta race");
-  }
-  alea = random(1,9);
-  Serial.println(alea);
-    
+  
 }
 
 // Fonctions
@@ -167,5 +160,3 @@ void point(){
   digitalWrite(led, LOW);    // LOW = Eteind
   delay(temps);
 }
-
-
