@@ -1,16 +1,25 @@
 const int led = 9;      // On attribue le pin sur lequel on a branché l'anode de la led  !!! IMPORTANT : On oublie pas de mettre une résistance !!!
+const int led2 = 2;
 const int temps = 250;   // Durée d'un point
+int bouton = 7;
+boolean erreur;
+boolean module;
+int buttonstate  = 0;
 long alea;
-
+int compteur;
 String message = "";  // Ne pas mettre d'accent dans le message
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  
+  module = false; 
+  erreur = true;
+  pinMode(bouton, INPUT);
+  compteur = 0;
   Serial.begin(9600);
   Serial.print("hello world");
   randomSeed(analogRead(0));
   pinMode(led, OUTPUT); // On définit le pin "led" en sortie
+  pinMode(led2, OUTPUT);
   alea = random(1,9);
   Serial.println(alea);
   switch (alea) {
@@ -111,15 +120,25 @@ void setup() {
 
   // On remplace maintenant ";|" par "|" dans le message transformé car la fin de lettre ne sert à rien avant un autre mot
   message.replace(";|","|");
-  
+  attachInterrupt(digitalPinToInterrupt(bouton), bascule, RISING);
 
 }
 
 // the loop function runs over and over again forever
 void loop() {
- // SequencageMorse(debut);     // On lance le séquencage morse du début de message
-  SequencageMorse(message);   // On séquence notre message à la suite
- // SequencageMorse(fin);       // On indique la fin du message
+
+  if (module == true){
+    digitalWrite(led2,HIGH);
+  }
+  else if (erreur == false){
+    digitalWrite(led2,HIGH);
+    delay(2000);
+    digitalWrite(led2,LOW);
+    
+  } 
+       SequencageMorse(message);   // On séquence notre message à la suite 
+
+
   
 }
 
@@ -128,24 +147,23 @@ void loop() {
 // Le séquencage morse
 void SequencageMorse(String msg){
   // On crée une boucle FOR qui démarre à 0 jusqu'au nombre de lettre dans le message à séquencer en incrémentant de 1 à chaque tour
-  for(int i = 0; i < msg.length(); i++) {
-    // On vérifie à quoi correspond chaque caractère dans la boucle
-    if (msg.substring(i, i+1) == "-") {
-      tiret();
-    }
-    else if (msg.substring(i, i+1) == ".") {
-      point();
-    }
-    else if (msg.substring(i, i+1) == ";") {
-      delay(3*temps);  // Rapelez-vous, un espacement de la durée de 3 points entre chaque lettre
-    }
-    else if (msg.substring(i, i+1) == "|") {
-      Serial.print("   ");
-      delay(7*temps);  // Rapelez-vous, un espacement de la durée de 7 points entre chaque mots
-    }
+    for(int i = 0; i < msg.length(); i++) {
+      // On vérifie à quoi correspond chaque caractère dans la boucle
+      if (msg.substring(i, i+1) == "-" and module == false) {
+        tiret();
+      }
+      else if (msg.substring(i, i+1) == "." and module == false) {
+        point();
+      }
+      else if (msg.substring(i, i+1) == ";" and module == false) {
+        delay(3*temps);  // Rapelez-vous, un espacement de la durée de 3 points entre chaque lettre
+      }
+      else if (msg.substring(i, i+1) == "|" and module == false) {
+        Serial.print("   ");
+        delay(7*temps);  // Rapelez-vous, un espacement de la durée de 7 points entre chaque mots
+      }
   }
 }
-
 // Fonctions pour l'activation-désactivation de la led selon si c'est un tiret ou un point avec les temps qui leur sont attribué et que vous pouvez règler tout en haut au début du code qui est la variable "temps"
 void tiret(){
   analogWrite(led,25);   // HIGH = Allumé
@@ -160,3 +178,15 @@ void point(){
   digitalWrite(led, LOW);    // LOW = Eteind
   delay(temps);
 }
+void bascule(){ // c'est la fonction qui est déclanchée quand on appui sur le bouton grace a la foncion attachinterrupt
+  compteur = compteur + 1;
+  Serial.println(compteur);
+  if (compteur == alea){
+    module = true;
+  }
+  else if (compteur > alea){
+    erreur = false;
+  }
+  
+}
+
