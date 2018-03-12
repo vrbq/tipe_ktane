@@ -1,6 +1,7 @@
 #ifndef Keyboard_h
 #define Keyboard_h
 
+#include "buzz.h"
 #include "Arduino.h"
 
 #define DEFAULT_BEEP_DURATION 120
@@ -21,11 +22,11 @@ const int note_duration = 165;
 const byte CODE_LENGTH=9;
 const byte CODE_DB_SIZE=7;
 const byte CODE_DB[CODE_LENGTH * CODE_DB_SIZE] = 
-    {SOL, SOL, RE, MI, MI, SOL, FA, FA, DO, 
+    {SOL, SOL, SOL, SOL, SOL, SOL, SOL, SOL, SOL, 
      MI, FA, FA, DO, SOL, RE, SOL, FA, DO, 
      FA, SOL, DO, DO, FA, RE, RE, MI, MI, 
      SOL, RE, FA, SOL, DO, SOL, DO, DO, SOL, 
-     RE, RE, MI, FA, RE, DO, MI, FA, FA, 
+     RE, RE, RE, RE, RE, RE, RE, RE, RE, 
      RE, SOL, SOL, DO, MI, SOL, MI, MI, DO, 
      RE, SOL, RE, SOL, SOL, MI, MI, FA, MI};
 
@@ -96,9 +97,9 @@ class Keyboard
 
     void playNote(int input_value)
     {
-      tone(speaker_pin_, NOTE_FREQUENCIES[input_value]);
-      delay(note_duration);
-      noTone(speaker_pin_);
+      buzz(speaker_pin_, NOTE_FREQUENCIES[input_value],note_duration);
+      //delay(note_duration);
+      //noTone(speaker_pin_);
     }
 
     Result newInput(int input_value)
@@ -175,9 +176,9 @@ class Keyboard
         }
       }
 
-      tone(speaker_pin_, DEFAULT_BEEP_FREQUENCY);
-      delay(DEFAULT_BEEP_DURATION);
-      noTone(speaker_pin_);
+      buzz(speaker_pin_, DEFAULT_BEEP_FREQUENCY,DEFAULT_BEEP_DURATION);
+      //delay(DEFAULT_BEEP_DURATION);
+      //noTone(speaker_pin_);
 
       delay(1800);
       
@@ -185,11 +186,12 @@ class Keyboard
 
     void blinkLedAndBeep(int led_pin, int speaker_pin, int duration, int beep_frequency=DEFAULT_BEEP_FREQUENCY)
     {
-      tone(speaker_pin, beep_frequency);
       digitalWrite(led_pin, HIGH);
-      delay(duration);
+      buzz(speaker_pin, beep_frequency,duration);
+      //digitalWrite(led_pin, HIGH);
+      //delay(duration);
 
-      noTone(speaker_pin);
+      //noTone(speaker_pin);
       digitalWrite(led_pin, LOW);
     }
 
@@ -212,9 +214,9 @@ class Keyboard
       delay(note_duration);
       for(int i=0; i<2; ++i)
       {
-        tone(speaker_pin_, DEFAULT_BEEP_FREQUENCY);
-        delay(90);
-        noTone(speaker_pin_);
+        buzz(speaker_pin_, DEFAULT_BEEP_FREQUENCY,90);
+        //delay(90);
+        //noTone(speaker_pin_);
         delay(90);
       }
       digitalWrite(red_led_pin_, LOW);
@@ -224,19 +226,19 @@ class Keyboard
     {
       const int green_led_pin_ = led_pins_[1];
       digitalWrite(green_led_pin_, HIGH);
-      noTone(speaker_pin_);
+      //noTone(speaker_pin_);
       delay(note_duration);
       for(int i=0; i<num_inputs_; ++i)
       {
-        tone(speaker_pin_, NOTE_FREQUENCIES[i]);
-        delay(100);
+        buzz(speaker_pin_, NOTE_FREQUENCIES[i],100);
+        //delay(100);
       }
       for(int i=num_inputs_-2; i>=0; --i)
       {
-        tone(speaker_pin_, NOTE_FREQUENCIES[i]);
-        delay(100);
+        buzz(speaker_pin_, NOTE_FREQUENCIES[i],100);
+        //delay(100);
       }
-      noTone(speaker_pin_);
+      //noTone(speaker_pin_);
       digitalWrite(green_led_pin_, LOW);
       delay(300);
     }
@@ -249,8 +251,6 @@ class Keyboard
     }
 
 
-
-
     int num_inputs_;
     int code_index_;
     int shift_;
@@ -260,5 +260,6 @@ class Keyboard
     int num_leds_;
     const int *led_pins_;
 };
+
 
 #endif
