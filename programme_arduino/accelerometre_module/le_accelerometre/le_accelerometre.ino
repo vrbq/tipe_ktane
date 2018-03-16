@@ -3,7 +3,11 @@
 #include <SPI.h>
 #include <Wire.h>
 #endif
-
+int = lcd;
+int bouton = 7; //changer le pin
+int buttonstate  = 0;
+boolean acc_module;
+int etape = 0;
 #include <MMA_7455.h>
 
 /* Case 1: Accelerometer on the I2C bus (most common) */
@@ -15,6 +19,9 @@ int16_t x, y, z;
 
 void setup()
 {
+  acc_module = true;
+  randomSeed(anlogRead(1));
+  lcd = random (1,4);
   /* Set serial baud rate */
   Serial.begin(9600);
   /* Start accelerometer */
@@ -31,10 +38,12 @@ void setup()
   /* Note: the offset is hardware specific
    * and defined thanks to the auto-calibration example. */
   accel.setAxisOffset(-8, 20, -33);
+  attachInterrupt(digitalPinToInterrupt(bouton), bascule, RISING);
 }
 
 void loop()
 {
+  if lcd = 
   /* Get 10-bit axis raw values */
   x = accel.readAxis10('x');
   y = accel.readAxis10('y');
@@ -65,3 +74,91 @@ void loop()
   Serial.println();
   delay(500);
 }
+
+void bascule (){
+  etape = etape + 1;
+  x = accel.readAxis10('x');
+  y = accel.readAxis10('y');
+  z = accel.readAxis10('z');
+  if (etape == 1){
+    if (lcd == 1){
+      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
+        acc_module == false;
+      }
+    }
+    if (lcd == 2){
+      
+    }
+    if (lcd == 3){
+      
+    }
+    if (lcd ==4){
+      
+    }   
+  }
+  if (etape == 2){
+    if (lcd == 1){
+      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
+        acc_module == false;
+      }
+    }
+    if (lcd == 2){
+      
+    }
+    if (lcd == 3){
+      
+    }
+    if (lcd ==4){
+      
+    }   
+  }
+  if (etape == 3){
+    if (lcd == 1){
+      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
+        acc_module == false;
+      }
+    }
+    if (lcd == 2){
+      
+    }
+    if (lcd == 3){
+      
+    }
+    if (lcd ==4){
+      
+    }   
+  }
+  if (etape == 4){
+    if (lcd == 1){
+      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
+        acc_module == false;
+      }
+    }
+    if (lcd == 2){
+      
+    }
+    if (lcd == 3){
+      
+    }
+    if (lcd ==4){
+      
+    }   
+  }
+  if (etape == 5){
+    if (lcd == 1){
+      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
+        acc_module == false;
+      }
+    }
+    if (lcd == 2){
+      
+    }
+    if (lcd == 3){
+      
+    }
+    if (lcd ==4){
+      
+    }   
+  }
+}
+
