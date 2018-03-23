@@ -8,6 +8,7 @@ int bouton = 7; //changer le pin
 int buttonstate  = 0;
 boolean acc_module;
 int etape = 0;
+int ep1 = 0;
 #include <MMA_7455.h>
 
 /* Case 1: Accelerometer on the I2C bus (most common) */
@@ -64,7 +65,7 @@ void loop()
  }  /*pour le devant :*/
  else if( x > -7 && x < 13 && y < -55 && y > -75 && z < 20 && z > 0) {
   Serial.print("\tdevant");
- }  /*pour la droite :*/
+ }  /*pour le derriere :*/
  else if( x > -3 && x < 17 && y < 70 && y > 50 && z < 3 && z > -17) {
   Serial.print("\tderriere");
  }
@@ -81,25 +82,30 @@ void bascule (){
   y = accel.readAxis10('y');
   z = accel.readAxis10('z');
   if (etape == 1){
-    if (lcd == 1){
+    ep1 = etape;
+    if (lcd == 1){ //gauche
       if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
         acc_module == false;
       }
     }
-    if (lcd == 2){
-      
+    if (lcd == 2){ //avant
+      if not(x > -7 && x < 13 && y < -55 && y > -75 && z < 20 && z > 0){
+        acc_module == false;
+      }
     }
-    if (lcd == 3){
-      
+    if (lcd == 3){ //droite
+      if not(x > -75 && x < -45 && y < 11 && y > -9 && z < 10 && z > -10){
+        acc_module == false;
+      }
     }
-    if (lcd ==4){
-      
+    if (lcd ==4){ //arriere
+      if not(x > -3 && x < 17 && y < 70 && y > 50 && z < 3 && z > -17){
+        acc_module == false;
+      }
     }   
   }
   if (etape == 2){
     if (lcd == 1){
-      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
-        acc_module == false;
       }
     }
     if (lcd == 2){
@@ -114,8 +120,6 @@ void bascule (){
   }
   if (etape == 3){
     if (lcd == 1){
-      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
-        acc_module == false;
       }
     }
     if (lcd == 2){
@@ -130,8 +134,6 @@ void bascule (){
   }
   if (etape == 4){
     if (lcd == 1){
-      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
-        acc_module == false;
       }
     }
     if (lcd == 2){
@@ -146,8 +148,6 @@ void bascule (){
   }
   if (etape == 5){
     if (lcd == 1){
-      if not ( x > 58 && x < 78 && y < 4 && y > -16 && z < 9 && z > -11){
-        acc_module == false;
       }
     }
     if (lcd == 2){
