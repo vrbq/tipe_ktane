@@ -52,18 +52,18 @@ class Keyboard
         return;
       }
       
-      num_inputs_ = num_inputs;
+      num_inputs_ = num_inputs; // global to local --> _
       speaker_pin_ = speaker_pin;
       num_leds_ = num_leds;
       led_pins_ = led_pins;
 
       pinMode(speaker_pin_, OUTPUT);
-      for(int i=0; i<num_leds_;++i)
+      for(int i=0; i<num_leds_;++i) // définit le output à chaque led 
       {
         pinMode(led_pins_[i], OUTPUT);
       }
       
-      reset();
+      reset(); // fonction définie plus bas
     }
 
     int codeValueAt(int index)
