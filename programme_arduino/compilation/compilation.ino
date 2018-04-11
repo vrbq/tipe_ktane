@@ -28,7 +28,7 @@ void setup() {
   // TIMER //
   pinMode(BOUTON_START, INPUT);
   byte numDigits = 4;
-  byte digitPins[] = {2, 3, 4, 5};
+  byte digitPins[] = {32, 33, 34, 35};
   byte segmentPins[] = {6, 7, 8, 9, 10, 11, 12, 13};
   sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins);
   sevseg.setBrightness(90);

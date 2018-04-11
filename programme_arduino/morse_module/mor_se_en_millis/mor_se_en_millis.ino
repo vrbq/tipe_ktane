@@ -17,6 +17,7 @@ void setup() {
   pinMode(bouton, INPUT);
   compteur = 0;
   Serial.begin(9600);
+  Serial.print("hello world");
   randomSeed(analogRead(0));
   pinMode(led, OUTPUT); // On définit le pin "led" en sortie
   pinMode(led2, OUTPUT);
@@ -158,17 +159,23 @@ void SequencageMorse(String msg){
         delay(3*temps);  // Rapelez-vous, un espacement de la durée de 3 points entre chaque lettre
       }
       else if (msg.substring(i, i+1) == "|" and module == false) {
-        Serial.print("   ");
         delay(7*temps);  // Rapelez-vous, un espacement de la durée de 7 points entre chaque mots
       }
   }
 }
 // Fonctions pour l'activation-désactivation de la led selon si c'est un tiret ou un point avec les temps qui leur sont attribué et que vous pouvez règler tout en haut au début du code qui est la variable "temps"
 void tiret(){
-  analogWrite(led,25);   // HIGH = Allumé
-  delay(3*temps);
+  Serial.println("tiret");
+  static unsigned long previousMillistiret = 0;
+  unsigned long currentMillis = millis();
+  Serial.println(currentMillis);
+  if(currentMillis - previousMillistiret >= 3*temps) {
+    analogWrite(led,25);   // HIGH = Allumé
+    previousMillistiret = currentMillis;
+  }
+  else if(currentMillis - previousMillistiret >= 4*temps) { 
   digitalWrite(led, LOW);    // LOW = Eteind
-  delay(temps);
+}
 }
 
 void point(){
@@ -190,4 +197,5 @@ void bascule(){ // c'est la fonction qui est déclanchée quand on appui sur le 
   }
   
 }
+
 
