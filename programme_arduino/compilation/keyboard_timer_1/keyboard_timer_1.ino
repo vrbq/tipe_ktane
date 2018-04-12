@@ -39,15 +39,20 @@ Keyboard keyboard;
 
 ///////////////////// TIMER /////////////
 //Connexions Ã©lectroniques et variables des boutons
-const int BOUTON_START = 52;            // Le bouton START est reliÃ© Ã  la broche 21
-int etatBoutonStart = 0;               // variable d'Ã©tat du bouton START
+const int button_timer_pin = A2;            // Le bouton START est reliÃ© Ã  la broche 21
+const int nb_button_timer = 5;
+const int button_timer_values[nb_button_timer] = {512};
+const int buttontimer1 = 0;
+
+int etat_button_timer_pin = 0;               // variable d'Ã©tat du bouton START
 
 //Variables relatives au temps
-unsigned long instantStart = 0;           // Instant ou l'on a appuyÃ© sur START
+unsigned long instantStart_timer = 0;           // Instant ou l'on a appuyÃ© sur START
 long tempsEcoule = 0;                     // Temps Ã©coulÃ© depuis que l'on a appuyÃ© sur START
 long temps = 0;  
 
 SevSeg sevseg; //7 segment du timer
+AnalogMultiButton button_timer(button_timer_pin, nb_button_timer, button_timer_values);
 
 
 
@@ -67,7 +72,7 @@ void setup()
   
 
   //TIMER 
-  pinMode(BOUTON_START, INPUT);
+  //pinMode(button_timer_pin, INPUT);
 
   byte numDigits = 4;
   byte digitPins[] = {2, 3, 4, 5};
@@ -82,14 +87,17 @@ void setup()
 void loop()
 {
 
-  etatBoutonStart = digitalRead(BOUTON_START);
+  button_timer.update();
+  
 
-  if (etatBoutonStart == LOW) {
+  //etat_button_timer_pin = digitalRead(button_timer_pin);
+
+  if (button_timer.onPress(buttontimer1)) {
     temps = 60;                                               // Temps du compteur en secondes
-    instantStart = millis();                                  //On utilise la fonction millis qui renvoie le nombre de millisecondes depuis que le programme est lancÃ© pour garder en mÃ©moire l'instant ou l'on a appuyÃ© sur start. Plus d'infos sur Millis ici : https://www.arduino.cc/en/Reference/Millis
+    instantStart_timer = millis();                                  //On utilise la fonction millis qui renvoie le nombre de millisecondes depuis que le programme est lancÃ© pour garder en mÃ©moire l'instant ou l'on a appuyÃ© sur start. Plus d'infos sur Millis ici : https://www.arduino.cc/en/Reference/Millis
     
     while (tempsEcoule != temps && bomb_explosed == 0) {                            // Tant que le temps Ã©coulÃ© n'est pas celui que l'on a sÃ©lectionnÃ©
-      tempsEcoule = 1 + (millis() - instantStart) / 1000;     //calcul du temps Ã©coulÃ© depuis l'appui sur start (+1 pour commencer chrono Ã  1)
+      tempsEcoule = 1 + (millis() - instantStart_timer) / 1000;     //calcul du temps Ã©coulÃ© depuis l'appui sur start (+1 pour commencer chrono Ã  1)
       sevseg.setNumber(calcul_temps_restant(tempsEcoule), 2);// On calcule le temps qu'il reste Ã  dÃ©compter et on dÃ©finit ce temps l'afficheur 7 Segments
       sevseg.refreshDisplay();                                // On rafraichit l'afficheur 7 Segments
 
