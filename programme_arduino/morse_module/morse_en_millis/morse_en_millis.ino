@@ -17,7 +17,6 @@ void setup() {
   pinMode(bouton, INPUT);
   compteur = 0;
   Serial.begin(9600);
-  Serial.print("hello world");
   randomSeed(analogRead(0));
   pinMode(led, OUTPUT); // On définit le pin "led" en sortie
   pinMode(led2, OUTPUT);
@@ -147,42 +146,41 @@ void loop() {
 // Le séquencage morse
 void SequencageMorse(String msg){
   // On crée une boucle FOR qui démarre à 0 jusqu'au nombre de lettre dans le message à séquencer en incrémentant de 1 à chaque tour
+    unsigned long currentMillis = millis();
+    static unsigned long previousMillis = 0;
     for(int i = 0; i < msg.length(); i++) {
       // On vérifie à quoi correspond chaque caractère dans la boucle
-      if (msg.substring(i, i+1) == "-" and module == false) {
-        tiret();
-      }
-      else if (msg.substring(i, i+1) == "." and module == false) {
-        point();
-      }
-      else if (msg.substring(i, i+1) == ";" and module == false) {
-        delay(3*temps);  // Rapelez-vous, un espacement de la durée de 3 points entre chaque lettre
-      }
-      else if (msg.substring(i, i+1) == "|" and module == false) {
-        delay(7*temps);  // Rapelez-vous, un espacement de la durée de 7 points entre chaque mots
-      }
-  }
+      if (module == false ){
+        if (msg.substring(i, i+1) == "-" ) {
+          analogWrite(led,25);
+          if(currentMillis - previousMillis >= 3*temps) {
+            analogWrite(led,LOW);   // HIGH = Allumé
+            previousMillis = currentMillis;
+        }
+        }
+        else if (msg.substring(i, i+1) == "." ) {
+          analogWrite(led, 25);   // HIGH = Allumé
+          if(currentMillis - previousMillis >= temps) {
+            analogWrite(led,LOW);   // HIGH = Allumé
+            previousMillis = currentMillis;
+          }
+        }
+        else if (msg.substring(i, i+1) == ";" ) {
+          analogWrite(led, LOW);   // HIGH = Allumé
+          if(currentMillis - previousMillis >= 3*temps) {
+            analogWrite(led,LOW);   // HIGH = Allumé
+            previousMillis = currentMillis;
+          }
+        }
+        else if (msg.substring(i, i+1) == "|" ) {// Rapelez-vous, un espacement de la durée de 7 points entre chaque mots
+           analogWrite(led, LOW);   // HIGH = Allumé
+          if(currentMillis - previousMillis >= 7*temps) {
+            analogWrite(led,LOW);   // HIGH = Allumé
+            previousMillis = currentMillis;
+          }
+        }
+    }
 }
-// Fonctions pour l'activation-désactivation de la led selon si c'est un tiret ou un point avec les temps qui leur sont attribué et que vous pouvez règler tout en haut au début du code qui est la variable "temps"
-void tiret(){
-  Serial.println("tiret");
-  static unsigned long previousMillistiret = 0;
-  unsigned long currentMillis = millis();
-  Serial.println(currentMillis);
-  if(currentMillis - previousMillistiret >= 3*temps) {
-    analogWrite(led,25);   // HIGH = Allumé
-    previousMillistiret = currentMillis;
-  }
-  else if(currentMillis - previousMillistiret >= 4*temps) { 
-  digitalWrite(led, LOW);    // LOW = Eteind
-}
-}
-
-void point(){
-  analogWrite(led, 25);   // HIGH = Allumé
-  delay(temps);
-  digitalWrite(led, LOW);    // LOW = Eteind
-  delay(temps);
 }
 void bascule(){ // c'est la fonction qui est déclanchée quand on appui sur le bouton grace a la foncion attachinterrupt
   compteur = compteur + 1;
