@@ -11,9 +11,6 @@
 ///////////// VARIABLES PROPRES AU JEU ///////////////
 int bomb_explosed = 0;
 
-/*unsigned long startMicros;
-unsigned long currentMicros;*/
-
 
 
 
@@ -39,10 +36,11 @@ Keyboard keyboard;
 
 ///////////////////// TIMER /////////////
 //Connexions Ã©lectroniques et variables des boutons
-const int button_timer_pin = A2;            // Le bouton START est reliÃ© Ã  la broche 21
+const int button_timer_pin = A2;            
 const int nb_button_timer = 5;
 const int button_timer_values[nb_button_timer] = {512};
 const int buttontimer1 = 0;
+AnalogMultiButton button_timer(button_timer_pin, nb_button_timer, button_timer_values);
 
 int etat_button_timer_pin = 0;               // variable d'Ã©tat du bouton START
 
@@ -52,7 +50,7 @@ long tempsEcoule = 0;                     // Temps Ã©coulÃ© depuis que l'on 
 long temps = 0;  
 
 SevSeg sevseg; //7 segment du timer
-AnalogMultiButton button_timer(button_timer_pin, nb_button_timer, button_timer_values);
+
 
 
 
@@ -61,9 +59,6 @@ AnalogMultiButton button_timer(button_timer_pin, nb_button_timer, button_timer_v
 
 void setup()
 {
-
-  unsigned long startMicros = micros();
-
   
   //KEYBOARD
   Serial.begin(9600);
@@ -108,7 +103,7 @@ void loop()
 
       for(int i=0; i<BUTTONS_TOTAL; ++i)
       {
-        unsigned long currentMicros = micros();
+
         if(button_keyboard.onPress(i) && keyboard_toomanyerrors == 0 && keyboard_solved == 0)
         {
           Keyboard::Result result = keyboard.newInput(i);
