@@ -3,7 +3,15 @@ const int led = 9;      // On attribue le pin sur lequel on a branché l'anode d
 const int led2 = 8;
 const int temps = 250;   // Durée d'un point
 int bouton = 7;
+byte etatBrocheLed = HIGH;
+unsigned long previousMillis = 0;
 boolean erreur;
+int intervalle;
+int intervalle2;
+int compt = 0;
+int compt2 = 0;
+int inter;
+int i = 0;
 boolean module;
 int buttonstate  = 0;
 long alea;
@@ -20,11 +28,11 @@ void setup() {
   randomSeed(analogRead(0));
   pinMode(led, OUTPUT); // On définit le pin "led" en sortie
   pinMode(led2, OUTPUT);
-  alea = random(1,9);
+  alea = 1;
   Serial.println(alea);
   switch (alea) {
     case 1:
-      message = "TOTO";
+      message = "O";
       Serial.println(message);
       break;
     case 2:
@@ -125,7 +133,7 @@ void setup() {
 }
 
 // the loop function runs over and over again forever
-void loop() {
+void loop() {    //message --> -.-.;....;..;--;..;.|
 
   if (module == true){
     digitalWrite(led2,HIGH);
@@ -134,54 +142,55 @@ void loop() {
     digitalWrite(led,HIGH);
 
     
-  } 
-       SequencageMorse(message);   // On séquence notre message à la suite 
+  }
+unsigned long currentMillis = millis();
+  if (message.substring(i, i+1) == "-" ) {
+    intervalle = 3*temps;
+    intervalle2 = temps;
+    inter = intervalle;
+  }
+  else if (message.substring(i, i+1) == "." ) {
+    intervalle = temps;
+    intervalle2 = temps;
+    inter = intervalle;
+    }
+  else if (message.substring(i, i+1) == ";" ) {
+    intervalle = 3*temps;
+    inter = intervalle;
+  }
+  else if (message.substring(i, i+1) == "|" ) {// Rapelez-vous, un espacement de la durée de 7 points entre chaque mots
+    intervalle = 7*temps;
+    inter = intervalle;
+  }
 
-
-  
+  if(currentMillis - previousMillis >= inter and (message.substring(i,i+1) == "-" or message.substring(i, i+1) == ".") ) {
+    previousMillis = currentMillis;
+    inter = intervalle2;
+    etatBrocheLed = !etatBrocheLed;
+    ++compt;
+    Serial.print(compt);
+    Serial.println(message.substring(i,i+1));
+    digitalWrite(led ,etatBrocheLed);
+  }
+  else if (currentMillis - previousMillis >= inter and (message.substring(i, i+1) == ";" or message.substring(i, i+1) == "|")){
+    ++compt2;
+    digitalWrite(led ,etatBrocheLed);
+  }
+if ((compt == 2 or compt2 == 1) and (message.substring(i+1,i+2) == ";" or message.substring(i+1, i+2) == "|")){ // un tiret ou un point se font toujous en deux temps d'où les intervalles 1 et 2 et le compteur
+  ++i;
+  compt=0;
+  Serial.print("if");
+  etatBrocheLed = LOW;
+}
+else if ((compt == 2 or compt2 == 1) and (message.substring(i+1,i+2) == "-" or message.substring(i+1, i+2) == ".")){
+  ++i;
+  compt2=0;
+  etatBrocheLed = HIGH;
+}
 }
 
 // Fonctions
 
-// Le séquencage morse
-void SequencageMorse(String msg){
-  // On crée une boucle FOR qui démarre à 0 jusqu'au nombre de lettre dans le message à séquencer en incrémentant de 1 à chaque tour
-    unsigned long currentMillis = millis();
-    static unsigned long previousMillis = 0;
-    for(int i = 0; i < msg.length(); i++) {
-      // On vérifie à quoi correspond chaque caractère dans la boucle
-      if (module == false ){
-        if (msg.substring(i, i+1) == "-" ) {
-          analogWrite(led,25);
-          if(currentMillis - previousMillis >= 3*temps) {
-            analogWrite(led,LOW);   // HIGH = Allumé
-            previousMillis = currentMillis;
-        }
-        }
-        else if (msg.substring(i, i+1) == "." ) {
-          analogWrite(led, 25);   // HIGH = Allumé
-          if(currentMillis - previousMillis >= temps) {
-            analogWrite(led,LOW);   // HIGH = Allumé
-            previousMillis = currentMillis;
-          }
-        }
-        else if (msg.substring(i, i+1) == ";" ) {
-          analogWrite(led, LOW);   // HIGH = Allumé
-          if(currentMillis - previousMillis >= 3*temps) {
-            analogWrite(led,LOW);   // HIGH = Allumé
-            previousMillis = currentMillis;
-          }
-        }
-        else if (msg.substring(i, i+1) == "|" ) {// Rapelez-vous, un espacement de la durée de 7 points entre chaque mots
-           analogWrite(led, LOW);   // HIGH = Allumé
-          if(currentMillis - previousMillis >= 7*temps) {
-            analogWrite(led,LOW);   // HIGH = Allumé
-            previousMillis = currentMillis;
-          }
-        }
-    }
-}
-}
 void bascule(){ // c'est la fonction qui est déclanchée quand on appui sur le bouton grace a la foncion attachinterrupt
   compteur = compteur + 1;
   Serial.println(compteur);
