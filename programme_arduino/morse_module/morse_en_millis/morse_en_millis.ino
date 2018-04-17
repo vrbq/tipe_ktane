@@ -3,9 +3,10 @@ const int led = 9;      // On attribue le pin sur lequel on a branché l'anode d
 const int led2 = 8;
 const int temps = 250;   // Durée d'un point
 int bouton = 7;
-byte etatBrocheLed = HIGH;
+byte etatBrocheLed;
+byte etatBrocheLed2;
 unsigned long previousMillis = 0;
-boolean erreur;
+unsigned long previousMillis2 = 0;
 int intervalle;
 int intervalle2;
 int compt = 0;
@@ -15,24 +16,22 @@ int i = 0;
 boolean module;
 int buttonstate  = 0;
 long alea;
-int compteur;
+int compteur = 0;
 String message = "";  // Ne pas mettre d'accent dans le message
 
-// the setup function runs once when you press reset or power the board
 void setup() {
   module = false; 
-  erreur = false;
+  etatBrocheLed = HIGH;
   pinMode(bouton, INPUT);
-  compteur = 0;
   Serial.begin(9600);
   randomSeed(analogRead(0));
   pinMode(led, OUTPUT); // On définit le pin "led" en sortie
   pinMode(led2, OUTPUT);
-  alea = 1;
+  alea = 2;
   Serial.println(alea);
   switch (alea) {
     case 1:
-      message = "O";
+      message = "TOTO";
       Serial.println(message);
       break;
     case 2:
@@ -128,21 +127,12 @@ void setup() {
 
   // On remplace maintenant ";|" par "|" dans le message transformé car la fin de lettre ne sert à rien avant un autre mot
   message.replace(";|","|");
-  attachInterrupt(digitalPinToInterrupt(bouton), bascule, RISING);
 
 }
 
 // the loop function runs over and over again forever
 void loop() {    //message --> -.-.;....;..;--;..;.|
-
-  if (module == true){
-    digitalWrite(led2,HIGH);
-  }
-  else if (erreur == true){
-    digitalWrite(led,HIGH);
-
-    
-  }
+buttonstate = digitalRead(bouton);
 unsigned long currentMillis = millis();
   if (message.substring(i, i+1) == "-" ) {
     intervalle = 3*temps;
@@ -168,41 +158,47 @@ unsigned long currentMillis = millis();
     inter = intervalle2;
     etatBrocheLed = !etatBrocheLed;
     ++compt;
-    Serial.print(compt);
-    Serial.println(message.substring(i,i+1));
-    digitalWrite(led ,etatBrocheLed);
+    //digitalWrite(led ,etatBrocheLed);
   }
   else if (currentMillis - previousMillis >= inter and (message.substring(i, i+1) == ";" or message.substring(i, i+1) == "|")){
     ++compt2;
-    digitalWrite(led ,etatBrocheLed);
+    etatBrocheLed = !etatBrocheLed;
+    previousMillis = currentMillis;
+    //digitalWrite(led ,etatBrocheLed);
   }
 if ((compt == 2 or compt2 == 1) and (message.substring(i+1,i+2) == ";" or message.substring(i+1, i+2) == "|")){ // un tiret ou un point se font toujous en deux temps d'où les intervalles 1 et 2 et le compteur
   ++i;
   compt=0;
-  Serial.print("if");
+  compt2 =0;
   etatBrocheLed = LOW;
 }
 else if ((compt == 2 or compt2 == 1) and (message.substring(i+1,i+2) == "-" or message.substring(i+1, i+2) == ".")){
   ++i;
-  compt2=0;
+  compt2 =0;
+  compt = 0;
   etatBrocheLed = HIGH;
 }
+if (i == message.length()-1){
+  i = 0;
 }
+digitalWrite(led, etatBrocheLed);
+digitalWrite(led2, etatBrocheLed2);
 
-// Fonctions
-
-void bascule(){ // c'est la fonction qui est déclanchée quand on appui sur le bouton grace a la foncion attachinterrupt
+if (buttonstate == HIGH and currentMillis - previousMillis2 >=300){
   compteur = compteur + 1;
+  previousMillis2 = currentMillis;
   Serial.println(compteur);
-  if (compteur == alea){
+}
+if (compteur == alea){
     module = true;
+    etatBrocheLed2 = HIGH;
   }
-  else if (compteur > alea){
-    Serial.println("ur dead as fuck");
-    erreur = true;
-    module = false;
-  }
-  
+else if (compteur > alea or currentMillis - previousMillis2 >= 5000){
+  module = false; // il faut changer ca dans le programme final et faire un compteur d'erreurs à la place
+  i = 500; // c'est une valeur lambda superieure à la longueur des mots 
+  etatBrocheLed = HIGH;
+  etatBrocheLed2 = LOW;
+}
 }
 
 
