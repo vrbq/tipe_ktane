@@ -107,7 +107,7 @@ class Keyboard
       
       index_next_button_in_code_ = 0;
       error_count_keyboard_= 0;
-      intern_state_keyboard_ = 1; //0 = PAUSE ; 1 = GAME ; 2 = CORRECT_INPUT ; 3 = WRONG_INPUT : 4 = GAME_VICTORY
+      intern_state_keyboard_ = 1; //0 = PAUSE ; 1 = GAME ; 11 = NOTE_PLAYING ; 2 = CORRECT_INPUT(NOTE_PLAYING) ; 3 = WRONG_INPUT : 4 = GAME_VICTORY
       
 
       // Choose a code randomly among the ones in the database
@@ -144,21 +144,42 @@ class Keyboard
       if(intern_state_keyboard_ != 0
       //&& timer.intern_state_timer_ == 1*          // Comment faire pour utiliser une variable de ma classe 
       ){ //Game is running
+
+
+        if (intern_state_keyboard_ == 1){ //Keyboard is running
+
+                  button_keyboard.update();
         
-        button_keyboard.update();
+                for(int i=0; i<BUTTONS_TOTAL; ++i)
+              {
+        
+                if(button_keyboard.onPress(i))
+                {
+                  newInput(i);
+                }  
+             
+              }
+        
+                return KEYBOARD_GAME;
+                
+        }
 
-        for(int i=0; i<BUTTONS_TOTAL; ++i)
-      {
+        if (intern_state_keyboard_ == 11){ //A note is playing
 
-        if(button_keyboard.onPress(i))
-        {
-          newInput(i);
-        }  
-     
+                  
+
+         }
+
+
+
+
+
+          
       }
 
-        return KEYBOARD_GAME;
-      }
+
+
+
  
     }
 
@@ -171,6 +192,7 @@ class Keyboard
       // shift the buttons so that button number i (starting from zero) corresponds to the note 'DO'
       input_value = (input_value + num_inputs_ - shift_) % num_inputs_;
 
+      intern_state_keyboard = 11;
       playNote(input_value);
       
       if(input_value == codeValueAt(index_next_button_in_code_)) // has the user hit the next key in the sequence?
