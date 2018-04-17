@@ -26,9 +26,6 @@ void setup() {
 }
 
 void loop() {
-
-
-  currentMillis = millis();
   
   fct_blinkled1();
   fct_blinkled2();
@@ -37,6 +34,7 @@ void loop() {
 
 
 void fct_blinkled1() {
+  currentMillis = millis();
   if (etatled1 == LOW)
   {
     if (currentMillis - start_led1 >= blinkled1)
@@ -61,6 +59,7 @@ void fct_blinkled1() {
 
 
 void fct_blinkled2() {
+  currentMillis = millis();
   if (etatled2 == LOW)
   {
     if (currentMillis - start_led2 >= blinkled2)

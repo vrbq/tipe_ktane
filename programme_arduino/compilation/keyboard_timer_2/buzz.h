@@ -13,7 +13,9 @@ void buzz(int targetPin, long frequency, long length) {
   }
 }
 
-/*void buzz(int targetPin, long frequency, long length) {
+/////
+/*
+void buzz(int targetPin, long frequency, long length) {
   
   long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
   
@@ -39,5 +41,5 @@ void buzz(int targetPin, long frequency, long length) {
     
   }
 
-}
+}*/
  

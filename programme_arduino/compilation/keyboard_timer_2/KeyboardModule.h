@@ -28,8 +28,7 @@ const int LED_PINS[NUM_LEDS] = {19, 14, 15, 16, 17, 18}; // R, G, Y, W, Error, V
 const int BUTTONS_TOTAL = 5;
 const int BUTTONS_VALUES[BUTTONS_TOTAL] = {170, 370, 520, 840, 930};
 
-
-
+AnalogMultiButton button_keyboard(BUTTONS_PIN, BUTTONS_TOTAL, BUTTONS_VALUES);
 
 
 
@@ -54,7 +53,7 @@ class Keyboard
 
     enum Result
     {
-      CORRECT_INPUT, WRONG_INPUT, CODE_FOUND
+      CORRECT_INPUT, WRONG_INPUT, CODE_FOUND, KEYBOARD_PAUSE, KEYBOARD_GAME
     };
 
     Keyboard() {}
@@ -79,8 +78,6 @@ class Keyboard
       {
         pinMode(led_pins_[i], OUTPUT);
       }
-
-      AnalogMultiButton button_keyboard(BUTTONS_PIN, BUTTONS_TOTAL, BUTTONS_VALUES);
       
       reset();
     }
@@ -95,7 +92,7 @@ class Keyboard
       
       index_next_button_in_code_ = 0;
       error_count_keyboard_= 0;
-      intern_state = 0; //0 = PAUSE ; 1 = GAME
+      intern_state_ = 1; //0 = PAUSE ; 1 = GAME ; 2 = CORRECT_INPUT ; 3 = WRONG_INPUT : 4 = GAME_VICTORY
       
 
       // Choose a code randomly among the ones in the database
@@ -119,6 +116,36 @@ class Keyboard
       buzz(speaker_pin_, NOTE_FREQUENCIES[input_value],note_duration);
     }
 
+
+
+
+   Result update_keyboard()
+    {
+      
+      if (intern_state_ == 0){ //Game is on pause
+        return KEYBOARD_PAUSE;
+      }
+
+      if(intern_state_ == 1){ //Game is running
+        
+        button_keyboard.update();
+
+        for(int i=0; i<BUTTONS_TOTAL; ++i)
+      {
+
+        if(button_keyboard.onPress(i))
+        {
+          newInput(i);
+        }  
+     
+      }
+
+        return KEYBOARD_GAME;
+      }
+ 
+    }
+
+
     Result newInput(int input_value)
     {
       // reverse the button order so that the keyboard reads from left ro right when looking towards the Arduino
@@ -140,20 +167,25 @@ class Keyboard
 
         if(index_next_button_in_code_ == CODE_LENGTH) // is that the last key of the sequence?
         {
+          intern_state_ = 4; //Game Victory
+          
           Serial.println("Congrats, you completed the code!");
           
           playVictorySequence();
-          
+
           return CODE_FOUND;
         }
         else
         {
+          intern_state_ = 2; 
           return CORRECT_INPUT;
         }
       }
       else
       {
         Serial.println("Wrong input. Start again from scratch.");
+
+        intern_state_ = 3;
         
         index_next_button_in_code_ = 0;
         error_count_keyboard_ ++;

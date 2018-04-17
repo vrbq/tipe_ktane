@@ -19,17 +19,6 @@ unsigned long currentMicros = micros();
 
 ///////////////// KEYBOARD //////////////////
 
-/*const int BUTTONS_PIN = A1;
-const int SPEAKER_PIN = 53;
-
-const int NUM_LEDS = 6;
-const int LED_PINS[NUM_LEDS] = {19, 14, 15, 16, 17, 18}; // R, G, Y, W, Error, Victory
-
-const int BUTTONS_TOTAL = 5;
-const int BUTTONS_VALUES[BUTTONS_TOTAL] = {170, 370, 520, 840, 930};
-
-AnalogMultiButton button_keyboard(BUTTONS_PIN, BUTTONS_TOTAL, BUTTONS_VALUES);*/
-
 int keyboard_toomanyerrors = 0;
 int keyboard_solved = 0;
 
@@ -38,12 +27,12 @@ Keyboard keyboard;
 
 
 ///////////////////// TIMER /////////////
-//Connexions Ã©lectroniques et variables des boutons
+/*Connexions Ã©lectroniques et variables des boutons
 const int button_timer_pin = A2;            
 const int nb_button_timer = 5;
 const int button_timer_values[nb_button_timer] = {512};
 const int buttontimer1 = 0;
-AnalogMultiButton button_timer(button_timer_pin, nb_button_timer, button_timer_values);
+AnalogMultiButton button_timer(button_timer_pin, nb_button_timer, button_timer_values);*/
 
 int etat_button_timer_pin = 0;               // variable d'Ã©tat du bouton START
 
@@ -66,17 +55,19 @@ void setup()
   //KEYBOARD
   Serial.begin(9600);
   randomSeed(analogRead(0));  
+
+  //KEYBOARD
   keyboard = Keyboard(BUTTONS_TOTAL, SPEAKER_PIN, NUM_LEDS, LED_PINS);
   
 
   //TIMER 
-  //pinMode(button_timer_pin, INPUT);
+  /*pinMode(button_timer_pin, INPUT);
 
   byte numDigits = 4;
   byte digitPins[] = {2, 3, 4, 5};
   byte segmentPins[] = {6, 7, 8, 9, 10, 11, 12, 13};
   sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins);
-  sevseg.setBrightness(90);
+  sevseg.setBrightness(90);*/
 }
 
 
@@ -101,26 +92,8 @@ void loop()
 
       /////////// KEYBOARD MODULE /////////
 
-      //Serial.println(analogRead(BUTTONS_PIN));
-      button_keyboard.update();  //rafraichissement des boutons du keyboard
+      keyboard.update_keyboard();
 
-      for(int i=0; i<BUTTONS_TOTAL; ++i)
-      {
-
-        if(button_keyboard.onPress(i) && keyboard_toomanyerrors == 0 && keyboard_solved == 0)
-        {
-          Keyboard::Result result = keyboard.newInput(i);
-          
-            if(result == Keyboard::Result::CODE_FOUND)
-            {
-            Serial.println("Keyboard module solved");
-              
-            keyboard_solved = 1;
-            
-            }
-        }  
-     
-      }
 
       ////// COMPTEUR D'ERREUR TOTAL /////
 

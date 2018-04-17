@@ -3,6 +3,8 @@
 
 #include "buzz.h"
 #include "Arduino.h"
+#include "timer.h"
+
 
 #define DEFAULT_BEEP_DURATION 120
 #define DEFAULT_BEEP_FREQUENCY 440
@@ -28,7 +30,11 @@ const int LED_PINS[NUM_LEDS] = {19, 14, 15, 16, 17, 18}; // R, G, Y, W, Error, V
 const int BUTTONS_TOTAL = 5;
 const int BUTTONS_VALUES[BUTTONS_TOTAL] = {170, 370, 520, 840, 930};
 
+AnalogMultiButton button_keyboard(BUTTONS_PIN, BUTTONS_TOTAL, BUTTONS_VALUES);
 
+
+
+//// DECLARATION POUR LE TIMER
 
 
 
@@ -52,10 +58,17 @@ class Keyboard
 {  
   public:
 
-    enum Result
+
+    enum Result1
+    {
+      KEYBOARD_PAUSE, KEYBOARD_GAME
+    };
+
+    enum Result2
     {
       CORRECT_INPUT, WRONG_INPUT, CODE_FOUND
     };
+
 
     Keyboard() {}
 
@@ -79,8 +92,7 @@ class Keyboard
       {
         pinMode(led_pins_[i], OUTPUT);
       }
-
-      AnalogMultiButton button_keyboard(BUTTONS_PIN, BUTTONS_TOTAL, BUTTONS_VALUES);
+      
       
       reset();
     }
@@ -95,7 +107,7 @@ class Keyboard
       
       index_next_button_in_code_ = 0;
       error_count_keyboard_= 0;
-      intern_state = 0; //0 = PAUSE ; 1 = GAME
+      intern_state_keyboard_ = 1; //0 = PAUSE ; 1 = GAME ; 11 = NOTE_PLAYING ; 2 = CORRECT_INPUT(NOTE_PLAYING) ; 3 = WRONG_INPUT : 4 = GAME_VICTORY
       
 
       // Choose a code randomly among the ones in the database
@@ -119,7 +131,60 @@ class Keyboard
       buzz(speaker_pin_, NOTE_FREQUENCIES[input_value],note_duration);
     }
 
-    Result newInput(int input_value)
+
+
+
+   Result1 update_keyboard()
+    {
+      
+      if (intern_state_keyboard_ == 0){ //Game is on pause
+        return KEYBOARD_PAUSE;
+      }
+
+      if(intern_state_keyboard_ != 0
+      //&& timer.intern_state_timer_ == 1*          // Comment faire pour utiliser une variable de ma classe 
+      ){ //Game is running
+
+
+        if (intern_state_keyboard_ == 1){ //Keyboard is running
+
+                  button_keyboard.update();
+        
+                for(int i=0; i<BUTTONS_TOTAL; ++i)
+              {
+        
+                if(button_keyboard.onPress(i))
+                {
+                  newInput(i);
+                }  
+             
+              }
+        
+                return KEYBOARD_GAME;
+                
+        }
+
+        if (intern_state_keyboard_ == 11){ //A note is playing
+
+                  
+
+         }
+
+
+
+
+
+          
+      }
+
+
+
+
+ 
+    }
+
+
+    Result2 newInput(int input_value)
     {
       // reverse the button order so that the keyboard reads from left ro right when looking towards the Arduino
       input_value = (num_inputs_ - 1) - input_value;
@@ -127,6 +192,7 @@ class Keyboard
       // shift the buttons so that button number i (starting from zero) corresponds to the note 'DO'
       input_value = (input_value + num_inputs_ - shift_) % num_inputs_;
 
+      intern_state_keyboard = 11;
       playNote(input_value);
       
       if(input_value == codeValueAt(index_next_button_in_code_)) // has the user hit the next key in the sequence?
@@ -140,20 +206,25 @@ class Keyboard
 
         if(index_next_button_in_code_ == CODE_LENGTH) // is that the last key of the sequence?
         {
+          intern_state_keyboard_ = 4; //Game Victory
+          
           Serial.println("Congrats, you completed the code!");
           
           playVictorySequence();
-          
+
           return CODE_FOUND;
         }
         else
         {
+          intern_state_keyboard_ = 2; 
           return CORRECT_INPUT;
         }
       }
       else
       {
         Serial.println("Wrong input. Start again from scratch.");
+
+        intern_state_keyboard_ = 3;
         
         index_next_button_in_code_ = 0;
         error_count_keyboard_ ++;
@@ -272,7 +343,7 @@ class Keyboard
     int shift_;
     int index_next_button_in_code_;
     int error_count_keyboard_;
-    int intern_state_;
+    int intern_state_keyboard_;
 
     int speaker_pin_;
     int num_leds_;
