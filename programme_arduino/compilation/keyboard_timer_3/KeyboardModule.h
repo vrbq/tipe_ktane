@@ -172,10 +172,15 @@ class Keyboard
         if(intern_state_keyboard_ == 11)
         {
           
-         
-          InputResult();
+          playNote(input_value); //PROBLEME QUE ON SATI PAS CE QUE C'EST LE INPUT VALUE ICI
+
+          InputResult(); //IL FAUDRAIT FAIRE LE INPUT RESULT UN FOIS LA NOTE FINIE : IMPOSSIBLE DE LA METTRE DANS LE BUZZ QUI EST UTILISEE PAR D'AUTRES FONCTIONS
         }
- 
+
+
+
+
+        
 
     }
 
@@ -190,13 +195,14 @@ class Keyboard
       input_value = (input_value + num_inputs_ - shift_) % num_inputs_;
 
       intern_state_keyboard_ = 11;
-
-      return NOTE_PLAYING;
+      
+      
+      return NOTE_PLAYING
 
     }
 
 
-    Result3 InputResult()
+    Result3 InputResult() //PROBLEME QUE ON SATI PAS CE QUE C'EST LE INPUT VALUE ICI
     {
 
 
