@@ -66,7 +66,12 @@ class Keyboard
 
     enum Result2
     {
-      CORRECT_INPUT, WRONG_INPUT, CODE_FOUND
+      NOTE_PLAYING
+    };
+
+    enum Result3
+    {
+      CORRECT_INPUT, CODE_FOUND, WRONG_INPUT, BOMB_EXPLOSED   //State "BOMB_EXPLOSED" not yet done
     };
 
 
@@ -107,7 +112,7 @@ class Keyboard
       
       index_next_button_in_code_ = 0;
       error_count_keyboard_= 0;
-      intern_state_keyboard_ = 1; //0 = PAUSE ; 1 = GAME ; 11 = NOTE_PLAYING ; 2 = CORRECT_INPUT(NOTE_PLAYING) ; 3 = WRONG_INPUT : 4 = GAME_VICTORY
+      intern_state_keyboard_ = 1; //0 = PAUSE ; 1 = GAME ; 11 = NOTE_PLAYING ; 1111 = CORRECT_INPUT ; 1112 = CODE_FOUND ; 1121 = WRONG_INPUT (ERROR) ; 1122 = BOMB_EXPLOSED
       
 
       // Choose a code randomly among the ones in the database
@@ -142,7 +147,7 @@ class Keyboard
       }
 
       if(intern_state_keyboard_ != 0
-      //&& timer.intern_state_timer_ == 1*          // Comment faire pour utiliser une variable de ma classe 
+      //&& timer.intern_state_timer_ == 1*          // Comment faire pour utiliser une variable de ma classe ?  /// EDIT : ON PEUT LE FAIRE GERER PAR UNE AUTRE CLASSE CA NAN ?
       ){ //Game is running
 
 
@@ -164,26 +169,18 @@ class Keyboard
                 
         }
 
-        if (intern_state_keyboard_ == 11){ //A note is playing
-
-                  
-
-         }
-
-
-
-
-
+        if(intern_state_keyboard_ == 11)
+        {
           
-      }
-
-
-
-
+         
+          InputResult();
+        }
  
+
     }
 
-
+  }
+    
     Result2 newInput(int input_value)
     {
       // reverse the button order so that the keyboard reads from left ro right when looking towards the Arduino
@@ -192,50 +189,67 @@ class Keyboard
       // shift the buttons so that button number i (starting from zero) corresponds to the note 'DO'
       input_value = (input_value + num_inputs_ - shift_) % num_inputs_;
 
-      intern_state_keyboard = 11;
-      playNote(input_value);
-      
+      intern_state_keyboard_ = 11;
+
+      return NOTE_PLAYING;
+
+    }
+
+
+    Result3 InputResult()
+    {
+
+
       if(input_value == codeValueAt(index_next_button_in_code_)) // has the user hit the next key in the sequence?
-      {
-        Serial.print("Correct input => ");
-        Serial.print(index_next_button_in_code_ + 1);
-        Serial.print(" / ");
-        Serial.println(CODE_LENGTH);
-        
-        index_next_button_in_code_++;
-
-        if(index_next_button_in_code_ == CODE_LENGTH) // is that the last key of the sequence?
-        {
-          intern_state_keyboard_ = 4; //Game Victory
+          {
+            Serial.print("Correct input => ");
+            Serial.print(index_next_button_in_code_ + 1);
+            Serial.print(" / ");
+            Serial.println(CODE_LENGTH);
+            
+            index_next_button_in_code_++;
+    
+            if(index_next_button_in_code_ == CODE_LENGTH) // is that the last key of the sequence?
+            {
+              intern_state_keyboard_ = 4; //Game Victory
+              
+              Serial.println("Congrats, you completed the code!");
+              
+              playVictorySequence();
+    
+              intern_state_keyboard_ = 1112;
+    
+              return CODE_FOUND;
+            }
+    
+            
+            else
+            {
+              intern_state_keyboard_ = 1111; 
+              return CORRECT_INPUT;
+            }
+    
+            
+          }
+    
           
-          Serial.println("Congrats, you completed the code!");
-          
-          playVictorySequence();
-
-          return CODE_FOUND;
-        }
-        else
-        {
-          intern_state_keyboard_ = 2; 
-          return CORRECT_INPUT;
-        }
-      }
       else
-      {
-        Serial.println("Wrong input. Start again from scratch.");
-
-        intern_state_keyboard_ = 3;
-        
-        index_next_button_in_code_ = 0;
-        error_count_keyboard_ ++;
-        Serial.println("Number of errors :");
-        Serial.println(error_count_keyboard_);
-        playErrorSequence();
-
-         return WRONG_INPUT;
-         
-
-      }
+          {
+            Serial.println("Wrong input. Start again from scratch.");
+    
+            intern_state_keyboard_ = 1121;
+            
+            index_next_button_in_code_ = 0;
+            error_count_keyboard_ ++;
+            Serial.println("Number of errors :");
+            Serial.println(error_count_keyboard_);
+            playErrorSequence();
+    
+             return WRONG_INPUT;
+             
+    
+          }
+  
     }
 
 

@@ -1,4 +1,4 @@
-void buzz(int targetPin, long frequency, long length) {
+/*void buzz(int targetPin, long frequency, long length) {
   long delayValue = 1000000/frequency/2; // calculate the delay value between transitions
   //// 1 second's worth of microseconds, divided by the frequency, then split in half since
   //// there are two phases to each cycle
@@ -11,10 +11,10 @@ void buzz(int targetPin, long frequency, long length) {
     digitalWrite(targetPin,LOW); // write the buzzer pin low to pull back the diaphram
     delayMicroseconds(delayValue); // wait againf or the calculated delay value
   }
-}
+}*/
 
 /////
-/*
+
 void buzz(int targetPin, long frequency, long length) {
   
   long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
@@ -27,19 +27,19 @@ void buzz(int targetPin, long frequency, long length) {
   //// get the total number of cycles to produce
 
   
-  unsigned long startMicros = 0; 
+  unsigned long startMicros_buzz = 0; 
 
   for (long i = 0; i < numCycles; i++) { // for the calculated length of time...
 
-  unsigned long currentMicros = micros();
+  unsigned long currentMicros_buzz = micros();
   
     digitalWrite(targetPin, HIGH);
-    if (currentMicros - startMicros >= delayValue ) {
+    if (currentMicros_buzz - startMicros_buzz >= delayValue ) {
       digitalWrite(targetPin, LOW);
-      startMicros = currentMicros;
+      startMicros_buzz = currentMicros_buzz;
     }
     
   }
 
-}*/
+}
  

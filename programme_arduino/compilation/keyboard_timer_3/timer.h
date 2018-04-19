@@ -72,7 +72,7 @@ class Timer
 
          if (button_timer.onPress(buttontimer1)) {
           
-            temps = 5;                                              
+            temps = 60;                                              
             instantStart_timer = millis();
             compteur_launched_ = 1;
          }
