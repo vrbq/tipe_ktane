@@ -58,21 +58,11 @@ class Keyboard
 {  
   public:
 
-
-    enum Result1
+    enum State
     {
-      KEYBOARD_PAUSE, KEYBOARD_GAME
+      PAUSE, GAME, NOTE_PLAYING, CHECK_INPUT_VALUE, PLAY_FEEDBACK_CORRECT, PLAY_FEEDBACK_WRONG, CODE_FOUND
     };
 
-    enum Result2
-    {
-      NOTE_PLAYING
-    };
-
-    enum Result3
-    {
-      CORRECT_INPUT, CODE_FOUND, WRONG_INPUT, BOMB_EXPLOSED   //State "BOMB_EXPLOSED" not yet done
-    };
 
 
     Keyboard() {}
@@ -106,15 +96,23 @@ class Keyboard
     {
         return (int) CODE_DB[code_index_ * CODE_LENGTH + index];
     }
-    
+
+    /////////////////// CONSTRUCTEUR //////////////
     void reset()
     {
       
       index_next_button_in_code_ = 0;
       error_count_keyboard_= 0;
-      intern_state_keyboard_ = 1; //0 = PAUSE ; 1 = GAME ; 11 = NOTE_PLAYING ; 1111 = CORRECT_INPUT ; 1112 = CODE_FOUND ; 1121 = WRONG_INPUT (ERROR) ; 1122 = BOMB_EXPLOSED
-      
+      state_ = GAME;
 
+      
+      last_time_note_playing_updated_ = 0;
+      digitalWrite(speaker_pin_,LOW);
+      current_cycle_number_ = 0;
+      
+      first_time_play_feedback_correct_ = true;
+      first_time_play_feedback_wrong_ = true;
+      
       // Choose a code randomly among the ones in the database
       code_index_ = random(1, 5);
       Serial.print("Selected code: ");
@@ -133,81 +131,90 @@ class Keyboard
 
     void playNote(int input_value)
     {
-      buzz(speaker_pin_, NOTE_FREQUENCIES[input_value],note_duration);
+      //buzz(speaker_pin_, NOTE_FREQUENCIES[input_value],note_duration);
     }
 
 
 
 
-   Result1 update_keyboard()
+   void update_keyboard()
     {
       
-      if (intern_state_keyboard_ == 0){ //Game is on pause
-        return KEYBOARD_PAUSE;
+      if (state_ == PAUSE){ //Game is on pause
+        return;
       }
 
-      if(intern_state_keyboard_ != 0
-      //&& timer.intern_state_timer_ == 1*          // Comment faire pour utiliser une variable de ma classe ?  /// EDIT : ON PEUT LE FAIRE GERER PAR UNE AUTRE CLASSE CA NAN ?
-      ){ //Game is running
+      else if(state_ == GAME){ 
 
-
-        if (intern_state_keyboard_ == 1){ //Keyboard is running
-
-                  button_keyboard.update();
+          button_keyboard.update();
         
-                for(int i=0; i<BUTTONS_TOTAL; ++i)
+          for(int i=0; i<BUTTONS_TOTAL; ++i)
+          {   
+              if(button_keyboard.onPress(i))
               {
-        
-                if(button_keyboard.onPress(i))
-                {
-                  newInput(i);
-                }  
+
+                  // reverse the button order so that the keyboard reads from left ro right when looking towards the Arduino
+                  input_value_ = (num_inputs_ - 1) - i;
+            
+                  // shift the buttons so that button number i (starting from zero) corresponds to the note 'DO'
+                  input_value_ = (input_value_ + num_inputs_ - shift_) % num_inputs_;
+
+                  state_ = NOTE_PLAYING;
+                  return;
+      
+              }  
              
-              }
+          }
+       return;
+
+      }
+
+      else if(state_ == NOTE_PLAYING)
+      {
+        int frequency = NOTE_FREQUENCIES[input_value_];
         
-                return KEYBOARD_GAME;
-                
-        }
+        long delayValue = 1000000 / frequency / 2; //delay en microsecondes
+        long numCycles = frequency * note_duration / 1000;
 
-        if(intern_state_keyboard_ == 11)
-        {
-          
-          playNote(input_value); //PROBLEME QUE ON SATI PAS CE QUE C'EST LE INPUT VALUE ICI
-
-          InputResult(); //IL FAUDRAIT FAIRE LE INPUT RESULT UN FOIS LA NOTE FINIE : IMPOSSIBLE DE LA METTRE DANS LE BUZZ QUI EST UTILISEE PAR D'AUTRES FONCTIONS
-        }
-
-
-
-
+        unsigned long current_time = micros();
         
+        if(current_time - last_time_note_playing_updated_ >= delayValue)
+        {       
+          int state_targetpin = digitalRead(speaker_pin_);
 
-    }
-
-  }
-    
-    Result2 newInput(int input_value)
-    {
-      // reverse the button order so that the keyboard reads from left ro right when looking towards the Arduino
-      input_value = (num_inputs_ - 1) - input_value;
-
-      // shift the buttons so that button number i (starting from zero) corresponds to the note 'DO'
-      input_value = (input_value + num_inputs_ - shift_) % num_inputs_;
-
-      intern_state_keyboard_ = 11;
-      
-      
-      return NOTE_PLAYING
-
-    }
-
-
-    Result3 InputResult() //PROBLEME QUE ON SATI PAS CE QUE C'EST LE INPUT VALUE ICI
-    {
-
-
-      if(input_value == codeValueAt(index_next_button_in_code_)) // has the user hit the next key in the sequence?
+          if (state_targetpin == HIGH)
           {
+            digitalWrite(speaker_pin_,LOW);
+            current_cycle_number_ ++;
+          }
+
+          else
+          {
+            digitalWrite(speaker_pin_,HIGH);  
+          }
+          
+        last_time_note_playing_updated_ = micros();
+          
+        }
+
+        if(current_cycle_number_ == numCycles)
+        {
+          state_ = CHECK_INPUT_VALUE;
+          current_cycle_number_ = 0;
+          last_time_note_playing_updated_ = 0;
+          digitalWrite(speaker_pin_,LOW);   //this is not necessary
+        }
+
+        return;
+            
+          
+      }
+
+      else if(state_ == CHECK_INPUT_VALUE)
+      {
+
+        if(input_value_ == codeValueAt(index_next_button_in_code_)) // has the user hit the next key in the sequence?
+        {
             Serial.print("Correct input => ");
             Serial.print(index_next_button_in_code_ + 1);
             Serial.print(" / ");
@@ -217,46 +224,90 @@ class Keyboard
     
             if(index_next_button_in_code_ == CODE_LENGTH) // is that the last key of the sequence?
             {
-              intern_state_keyboard_ = 4; //Game Victory
               
               Serial.println("Congrats, you completed the code!");
-              
-              playVictorySequence();
-    
-              intern_state_keyboard_ = 1112;
-    
-              return CODE_FOUND;
+              state_ = CODE_FOUND;
             }
     
             
             else
             {
-              intern_state_keyboard_ = 1111; 
-              return CORRECT_INPUT;
+              state_ = PLAY_FEEDBACK_CORRECT; 
             }
     
             
-          }
+        }
     
           
-      else
-          {
+        else
+        {
             Serial.println("Wrong input. Start again from scratch.");
     
-            intern_state_keyboard_ = 1121;
+            state_ = PLAY_FEEDBACK_WRONG;
             
             index_next_button_in_code_ = 0;
             error_count_keyboard_ ++;
             Serial.println("Number of errors :");
-            Serial.println(error_count_keyboard_);
-            playErrorSequence();
+            Serial.println(error_count_keyboard_);  
     
-             return WRONG_INPUT;
-             
+        }
+        
+      }
+
+      else if(state_ == PLAY_FEEDBACK_CORRECT)
+      {
+
+        if(first_time_play_feedback_correct_) //means if(first_time_play_feedback_correct_ == true)
+        {
+          previousMillis_correct_led_ = millis();
+          first_time_play_feedback_correct_ = false;
+        }
+
+        unsigned long currentMillis_correct_led = millis();
+        digitalWrite(led_pins_[5], HIGH);
+
+        if (currentMillis_correct_led - previousMillis_correct_led_ >= note_duration) 
+        {
+          digitalWrite(led_pins_[5], LOW);
+          first_time_play_feedback_correct_ = true;
+          state_ = GAME;
+        }
+
+      }
+
+      else if(state_ == PLAY_FEEDBACK_WRONG)
+      {
+
+        if(first_time_play_feedback_wrong_ == true)
+        {
+          previousMillis_error_led_ = millis();
+          first_time_play_feedback_wrong_ = false;
+        }
+
+        unsigned long currentMillis_error_led = millis();
+        digitalWrite(led_pins_[4], HIGH);
+
+        if (currentMillis_error_led - previousMillis_error_led_ >= note_duration) 
+        {
+          digitalWrite(led_pins_[4], LOW);
+          first_time_play_feedback_wrong_ = true;
+          state_ = GAME;
+        }
     
-          }
-  
-    }
+
+        
+      }
+
+      else if(state_ == CODE_FOUND){
+        digitalWrite(led_pins_[4], HIGH);
+        digitalWrite(led_pins_[5], HIGH);
+        state_ = PAUSE;
+        
+      }
+
+  }
+    
+
 
 
     void indicateNumberWithLedsCode (int number)
@@ -336,7 +387,7 @@ class Keyboard
       delay(note_duration);
       for(int i=0; i<2; ++i)
       {
-        buzz(speaker_pin_, DEFAULT_BEEP_FREQUENCY,90);
+        //buzz(speaker_pin_, DEFAULT_BEEP_FREQUENCY,90);
         delay(90);
       }
       digitalWrite(error_pin, LOW);
@@ -349,7 +400,7 @@ class Keyboard
       delay(note_duration);
       for(int i=0; i<2; ++i)
       {
-        buzz(speaker_pin_, DEFAULT_BEEP_FREQUENCY,180); //le 180 etait 90 a la base, pour le "error"
+        //buzz(speaker_pin_, DEFAULT_BEEP_FREQUENCY,180); //le 180 etait 90 a la base, pour le "error"
         //delay(90);
         //noTone(speaker_pin_);
         delay(90);
@@ -361,10 +412,22 @@ class Keyboard
     int num_inputs_;
     int code_index_;
     int shift_;
+    int input_value_; //Last input from the user (for check_input_value)
     int index_next_button_in_code_;
     int error_count_keyboard_;
-    int intern_state_keyboard_;
+    State state_;
 
+    //Variables utiles pour note_playing
+    unsigned long last_time_note_playing_updated_;     
+    int current_cycle_number_;
+
+    //Play Feedback Correct
+    unsigned long previousMillis_correct_led_;
+    boolean first_time_play_feedback_correct_;
+
+    unsigned long previousMillis_error_led_;
+    boolean first_time_play_feedback_wrong_;
+        
     int speaker_pin_;
     int num_leds_;
     const int *led_pins_;
