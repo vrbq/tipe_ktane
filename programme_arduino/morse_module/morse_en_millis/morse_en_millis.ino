@@ -1,10 +1,11 @@
 //https://forum.arduino.cc/index.php?topic=492308.0
 const int led = 9;  //led du morse
+const int buzz = 6;
 const int led2 = 8; //led verte qui indique si c'est réussi ou pas
 const int temps = 250;   // Durée d'un point (durée de référence)
 int bouton = 7; // bouton pour saisir le numéro du mot
-byte etatBrocheLed;
-byte etatBrocheLed2;
+byte etat;
+byte etat2;
 unsigned long previousMillis = 0;
 unsigned long previousMillis2 = 0; 
 int intervalle;
@@ -15,19 +16,20 @@ int inter;
 int i = 0;
 boolean module;
 int buttonstate  = 0;
-long alea;
+int alea;
 int compteur = 0;
 String message = "";  // Ne pas mettre d'accent dans le message
 
 void setup() {
   module = false; // etat du module
-  etatBrocheLed = HIGH;
+  etat = HIGH;
   pinMode(bouton, INPUT);
+  pinMode(buzz, OUTPUT);
   Serial.begin(9600);
   randomSeed(analogRead(0));
   pinMode(led, OUTPUT); 
   pinMode(led2, OUTPUT);
-  alea = alea(1,9);
+  alea = random(1,9);
   Serial.print(alea);
   Serial.print(" --> ");
   switch (alea) { // les différents mots dans la fonciton switch case
@@ -75,9 +77,6 @@ void setup() {
   // Notez que j'ajoute un ";" volontairement à la fin afin de marquer la fin de la lettre dans le sequencage morse plus bas dans le code
   // on commence en toute logique par les "." et "-" et ";" qui sont dans votre message afin de ne pas remplacer les . ou - d'une lettre déjà convertie donc on commence par ça
   
-  message.replace(".",".-.-.-;");
-  message.replace("-","-....-;");
-  // message.replace(";","-.-.-;");  // non je ne remplace pas celui là car ca enlèverait la fin des deux premières conversions
   message.replace("A",".-;");
   message.replace("B","-...;");
   message.replace("C","-.-.;");
@@ -130,70 +129,73 @@ void setup() {
 }
 
 void loop() {    //message --> -.-.;....;..;--;..;.| message morse du mot chimie
+digitalWrite(led, etat);
+digitalWrite(led2,etat2);
 buttonstate = digitalRead(bouton);
 unsigned long currentMillis = millis();
+if (compt == 0 and compt2 ==0){
   if (message.substring(i, i+1) == "-" ) { // cas du "long"
-    intervalle = 3*temps;
-    intervalle2 = temps;
-    inter = intervalle;
+    inter = 3*temps;
   }
   else if (message.substring(i, i+1) == "." ) { // cas du "court"
-    intervalle = temps;
-    intervalle2 = temps;
-    inter = intervalle;
+    inter = temps;
     }
   else if (message.substring(i, i+1) == ";" ) { //espace entre chaque lettre
-    intervalle = 3*temps;
-    inter = intervalle;
+    inter = 3*temps;
   }
-  else if (message.substring(i, i+1) == "|" ) {// Rappelez-vous, un espacement de la durée de 7 points entre chaque mots
-    intervalle = 7*temps;
-    inter = intervalle;
+  else if (message.substring(i, i+1) == "|" ) {//espacement de 7 temps entre chaque mots
+    inter = 7*temps;
   }
-
+}
   if(currentMillis - previousMillis >= inter and (message.substring(i,i+1) == "-" or message.substring(i, i+1) == ".") ) { // à chaque fois que le temps indique par inter est dépassé on change l'état de la led
     previousMillis = currentMillis;
-    inter = intervalle2; // comme le tiret se fait en deux temps différents je change la longueur du temps a attendre pour la deuxieme partie
-    etatBrocheLed = !etatBrocheLed;
+    if (message.substring(i,i+1) == "-"){// comme le tiret se fait en deux temps différents je change la longueur du temps a attendre pour la deuxieme partie
+      inter = temps;
+    }
+    etat = ! etat;
     ++compt;
   }
-  else if (currentMillis - previousMillis >= inter and (message.substring(i, i+1) == ";" or message.substring(i, i+1) == "|")){
+  else if (currentMillis - previousMillis >= inter and message.substring(i, i+1) == ";"){
     ++compt2;
-    etatBrocheLed = !etatBrocheLed;
     previousMillis = currentMillis;
   }
+  else if (currentMillis - previousMillis >= inter and message.substring(i,i+1) == "|"){
+    previousMillis = currentMillis;
+    ++i;
+  }
+if (i == message.length()){ // je sais pas pourquoi il faut mettre -1 mais sinon ca boucle pas donc bon message length = 21 pour alea = 2 et ca s'arrete a 20
+  i = 0; // on boucle
+  etat = HIGH;
+}
 if ((compt == 2 or compt2 == 1) and (message.substring(i+1,i+2) == ";" or message.substring(i+1, i+2) == "|")){ // un tiret ou un point se font toujous en deux temps d'où les intervalles 1 et 2 et le compteur
   ++i; 
   compt=0;   //a chaque fois qu'un signal est transcrit on remet le compteur à 0 
   compt2 =0;
-  etatBrocheLed = LOW; // comme le prochain caractère est un espacement avec la led éteinte je met l'état en low
+  etat = LOW; // comme le prochain caractère est un espacement avec la led éteinte je met l'état en low
 }
 else if ((compt == 2 or compt2 == 1) and (message.substring(i+1,i+2) == "-" or message.substring(i+1, i+2) == ".")){ 
   ++i;
   compt2 =0;
   compt = 0;
-  etatBrocheLed = HIGH; // comme le prochain caractère et un tiret ou un point il faut mettre l'état en high
+  etat = HIGH; // comme le prochain caractère et un tiret ou un point il faut mettre l'état en high
 }
-if (i == message.length()-1){ // je sais pas pourquoi il faut mettre -1 mais sinon ca boucle pas donc bon
-  i = 0; // on boucle
-}
-digitalWrite(led, etatBrocheLed);
-digitalWrite(led2, etatBrocheLed2);
 
 if (buttonstate == HIGH and currentMillis - previousMillis2 >=300){  // le temps de 300 millis sert a éviter le rebond (j'ai pas réussi avec les condensateurs masi bon ca marche bien logiciellement) 
-  compteur = compteur + 1;
+ ++ compteur;
   previousMillis2 = currentMillis;
   Serial.println(compteur);
 }
 if (compteur == alea){
     module = true;
-    etatBrocheLed2 = HIGH;
+    etat2 = HIGH;
+    etat = LOW;
   }
-else if (compteur > alea or currentMillis - previousMillis2 >= 5000){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
+else if (compteur > alea or (currentMillis - previousMillis2 >= 5000 and compteur > 0)){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
   module = false; // il faut changer ca dans le programme final et faire un compteur d'erreurs à la place
-  i = 500; // c'est une valeur lambda superieure à la longueur des mots 
-  etatBrocheLed = HIGH;
-  etatBrocheLed2 = LOW;
+  i = 50; // c'est une valeur lambda superieure à la longueur des mots 
+  etat = HIGH;
+  etat2 = LOW;
+  compteur = 10; 
 }
 }
 
