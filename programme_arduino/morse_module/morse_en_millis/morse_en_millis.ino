@@ -1,4 +1,5 @@
-//https://forum.arduino.cc/index.php?topic=492308.0
+//https://forum.arduino.cc/index.php?topic=492308.0 morse
+//https://www.carnetdumaker.net/articles/faire-plusieurs-choses-la-fois-avec-une-carte-arduino/ utilisation de la fontion millis
 const int led = 9;  //led du morse
 const int buzz = 6;
 const int led2 = 8; //led verte qui indique si c'est réussi ou pas
@@ -185,17 +186,19 @@ if (buttonstate == HIGH and currentMillis - previousMillis2 >=300){  // le temps
   previousMillis2 = currentMillis;
   Serial.println(compteur);
 }
-if (compteur == alea){
-    module = true;
-    etat2 = HIGH;
-    etat = LOW;
+if (compteur > 0 and currentMillis - previousMillis2 >= 5000){
+  if (compteur == alea){
+      module = true;
+      etat2 = HIGH;
+      etat = LOW;
+    }
+  else if (compteur > alea){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
+    module = false; // il faut changer ca dans le programme final et faire un compteur d'erreurs à la place
+    i = 50; // c'est une valeur lambda superieure à la longueur des mots 
+    etat = HIGH;
+    etat2 = LOW;
+    compteur = 10; 
   }
-else if (compteur > alea or (currentMillis - previousMillis2 >= 5000 and compteur > 0)){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
-  module = false; // il faut changer ca dans le programme final et faire un compteur d'erreurs à la place
-  i = 50; // c'est une valeur lambda superieure à la longueur des mots 
-  etat = HIGH;
-  etat2 = LOW;
-  compteur = 10; 
 }
 }
 
