@@ -1,5 +1,5 @@
 
-const int BUTTON_PIN = A8;
+const int BUTTON_PIN = A3;
 
 void setup() {
   // put your setup code here, to run once:
