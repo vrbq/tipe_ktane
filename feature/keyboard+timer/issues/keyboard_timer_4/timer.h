@@ -96,12 +96,12 @@ class Timer
             time_elapsed_since_launched_sec = (millis() - time_timer_launched_) / 1000; //en s
             //Serial.println(time_elapsed_since_launched_sec);
 
-            /*if(time_elapsed_since_launched_sec != last_time_elapsed_)
+            if(time_elapsed_since_launched_sec != last_time_elapsed_)
             {
               Serial.println("A beep is playing");
               state_ = TIMER_SOUND;
               return;
-            }*/
+            }
             
             if(time_elapsed_since_launched_sec >= temps_max_bomb)
             {
@@ -118,18 +118,18 @@ class Timer
         }
 
 
-        /*if(state_ == TIMER_SOUND)
+        if(state_ == TIMER_SOUND)
         {
             int frequency = 330;
             
             long delayValue = 1000000 / frequency / 2; //delay en microsecondes
-            Serial.println("Delay Value is");
-            Serial.println(delayValue);
+            //Serial.println("Delay Value is");
+            //Serial.println(delayValue);
             long numCycles = frequency * 165 / 1000; //165 = note_duration (defined in KeyboardModule.h)
     
             unsigned long current_time = micros();
-            Serial.println("Current time is");
-            Serial.println(current_time);
+            //Serial.println("Current time is");
+            //Serial.println(current_time);
             
             if(current_time - last_time_note_playing_updated_ >= delayValue)
             {       
@@ -139,8 +139,8 @@ class Timer
               {
                 digitalWrite(buzzer_timer_pin,LOW);
                 current_cycle_number_ ++;
-                Serial.println("Current cycle is");
-                Serial.println(current_cycle_number_);
+                //Serial.println("Current cycle is");
+                //Serial.println(current_cycle_number_);
               }
     
               else
@@ -161,7 +161,7 @@ class Timer
               digitalWrite(buzzer_timer_pin,LOW);   //this is not necessary
             }
             
-          }  */ 
+          }  
            
     }
     

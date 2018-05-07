@@ -249,7 +249,7 @@ class Morse
             etat_led_morse = LOW;
           }
           
-        else if (compteur > alea){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
+        else if (compteur != alea){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
           module = false; // il faut changer ca dans le programme final et faire un compteur d'erreurs à la place
           Serial.println("Failed it");
           i = 50; // c'est une valeur lambda superieure à la longueur des mots 
