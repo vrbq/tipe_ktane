@@ -41,17 +41,15 @@ Timer timer;
 void setup()
 {
 
-  
-  //KEYBOARD
-  Serial.begin(9600);
-  randomSeed(analogRead(0));  
+  Serial.begin(9600); //set monitor display
+  randomSeed(analogRead(0));  //re-seed a new random value
 
   //KEYBOARD
-  keyboard = Keyboard(BUTTONS_TOTAL, SPEAKER_PIN, NUM_LEDS, LED_PINS);
+  keyboard = Keyboard(BUTTONS_TOTAL, SPEAKER_PIN, NUM_LEDS, LED_PINS); //definition of keyboard class
   
 
   //TIMER 
-  timer = Timer();
+  timer = Timer(); //definition of timer class
 
   //MORSE
   //morse = Morse();
