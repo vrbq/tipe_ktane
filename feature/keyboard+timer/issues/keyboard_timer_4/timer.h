@@ -96,12 +96,12 @@ class Timer
             time_elapsed_since_launched_sec = (millis() - time_timer_launched_) / 1000; //en s
             //Serial.println(time_elapsed_since_launched_sec);
 
-            if(time_elapsed_since_launched_sec != last_time_elapsed_)
+            /*if(time_elapsed_since_launched_sec != last_time_elapsed_)
             {
               Serial.println("A beep is playing");
               state_ = TIMER_SOUND;
               return;
-            }
+            }*/
             
             if(time_elapsed_since_launched_sec >= temps_max_bomb)
             {
@@ -118,7 +118,7 @@ class Timer
         }
 
 
-        if(state_ == TIMER_SOUND)
+        /*if(state_ == TIMER_SOUND)
         {
             int frequency = 330;
             
@@ -161,7 +161,7 @@ class Timer
               digitalWrite(buzzer_timer_pin,LOW);   //this is not necessary
             }
             
-          }  
+          }*/
            
     }
     

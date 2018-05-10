@@ -8,17 +8,12 @@
 #include "MorseModule.h"
 
 
-
-
-//#define DEBUG
-
 ///////////// VARIABLES PROPRES AU JEU ///////////////
-int bomb_explosed = 0;
+boolean bomb_explosed = false;
 
-unsigned long startMicros = 0; 
-unsigned long currentMicros = micros();
+boolean game_launched = false;
 
-
+int error_count_total = 0;
 
 
 ///////////////// KEYBOARD //////////////////
@@ -66,36 +61,27 @@ void loop()
       /////////// TIMER /////////
 
       timer.update_timer();
-      
-
 
       /////////// KEYBOARD MODULE /////////
 
       keyboard.update_keyboard();
 
-
       ///////// MORSE MODULE /////////
+      
       //morse.update_morse();
-
 
       ////// COMPTEUR D'ERREUR TOTAL /////
 
-      if (keyboard.error_count_keyboard_ == 3) //Penser a ajouter les erreurs des autres modules quand ils seront faits
+      error_count_total = keyboard.error_count_keyboard_; //Penser a ajouter les erreurs des autres modules quand ils seront faits
+
+      if (error_count_total == 3)
       {
         Serial.println("You loose, too many errors.");
         bomb_explosed = 1;
         sevseg.setNumber(0, 2);
         sevseg.refreshDisplay();
       }
-      
-
-#ifdef DEBUG
-  if(button_keyboard.onPressAfter(4, 1500))
-  {
-    Serial.println("Reset button manually pressed");
-    keyboard.reset();
-  }
-#endif
+     
 
 }
 

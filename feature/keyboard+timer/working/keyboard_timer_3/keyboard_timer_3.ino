@@ -68,7 +68,7 @@ void loop()
 
       ////// COMPTEUR D'ERREUR TOTAL /////
 
-      if (keyboard.error_count_keyboard_ == 3) //Penser a ajouter les erreurs des autres modules quand ils seront faits
+      if (keyboard.error_count_keyboard_ == 5) //Penser a ajouter les erreurs des autres modules quand ils seront faits
       {
         Serial.println("You loose, too many errors.");
         bomb_explosed = 1;

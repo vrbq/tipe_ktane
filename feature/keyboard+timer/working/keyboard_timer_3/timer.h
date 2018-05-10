@@ -6,7 +6,7 @@
 
   // CONSTANTES TIMER BOUTONS
 const int button_timer_pin = A2;            
-const int nb_button_timer = 5;
+const int nb_button_timer = 1;
 const int button_timer_values[nb_button_timer] = {512};
 const int buttontimer1 = 0;
 
