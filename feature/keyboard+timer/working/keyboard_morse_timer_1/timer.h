@@ -4,14 +4,10 @@
 #include "SevSeg.h"
 
 
-// NOT SURE IT IS USEFUL ?
-//int etat_button_timer_pin = 0;
-
-
-
   // VARIABLES RELATIVES AU TEMPS
 long time_elapsed_since_launched_sec = 0; //Time elapsed since the timer was launched
-long time_max_bomb;  
+long time_max_bomb; 
+boolean time_out;
 
 
   //BUZZER
@@ -59,23 +55,34 @@ class Timer
 
     }
 
+   void start()
+   {
+    if(state_ == PAUSE)
+        {
+                       
+           time_max_bomb = 300; //s                                             
+           Serial.print("Launched for : ");
+           Serial.print(time_max_bomb);
+           Serial.println(" secondes");
+           time_timer_launched_ = millis();
+           time_out = false;
+
+           state_ = TIMER_RUN;
+           
+           return;
+         
+        }
+   }
+
 
    void update_timer()
     {
 
         if(state_ == PAUSE)
         {
-          
-         if (game_launched == true) {
-          
-            time_max_bomb = 60; //s                                             
-            state_ = TIMER_RUN;
-            Serial.println("Launched");
-            time_timer_launched_ = millis();
-            return;
-         }
-         
+           return;
         }
+         
 
         else if(state_ == TIMER_RUN)
         {
@@ -92,7 +99,8 @@ class Timer
             
             if(time_elapsed_since_launched_sec >= time_max_bomb)
             {
-              Serial.println("Bomb exploded");
+              //Serial.println("Bomb exploded (in timer module)");
+              time_out = true;
               state_ = PAUSE;
               return;
             }

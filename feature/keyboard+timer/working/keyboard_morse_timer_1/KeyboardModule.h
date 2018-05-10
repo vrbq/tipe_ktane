@@ -31,7 +31,7 @@ const int NUM_LEDS = 6;
 const int LED_PINS[NUM_LEDS] = {19, 14, 15, 16, 17, 18}; // Red, Green, Yellow, White, Error, Victory
 
 const int BUTTONS_TOTAL = 5;
-const int BUTTONS_VALUES[BUTTONS_TOTAL] = {170, 370, 520, 840, 930};
+const int BUTTONS_VALUES[BUTTONS_TOTAL] = {196, 430, 573, 855, 962};
 
 AnalogMultiButton button_keyboard(BUTTONS_PIN, BUTTONS_TOTAL, BUTTONS_VALUES);
 
@@ -41,13 +41,13 @@ AnalogMultiButton button_keyboard(BUTTONS_PIN, BUTTONS_TOTAL, BUTTONS_VALUES);
 const byte CODE_LENGTH=9;
 const byte CODE_DB_SIZE=9;
 const byte CODE_DB[CODE_LENGTH * CODE_DB_SIZE] = 
-    {SOL, SOL, SOL, SOL, SOL, SOL, SOL, SOL, SOL, 
-     MI, FA, FA, DO, SOL, RE, SOL, FA, DO, 
-     FA, SOL, DO, DO, FA, RE, RE, MI, MI, 
-     SOL, RE, FA, SOL, DO, SOL, DO, DO, SOL, 
-     RE, RE, RE, RE, RE, RE, RE, RE, RE, 
-     RE, SOL, SOL, DO, MI, SOL, MI, MI, DO, 
-     RE, SOL, RE, SOL, SOL, MI, MI, FA, MI,
+    {DO, RE, MI, RE, DO, MI, RE, RE, DO, //AU CLAIR DE LA LUNE
+     DO, DO, RE, DO, FA, MI, DO, DO, RE, //FRERES JACQUES
+     MI, MI, FA, SOL, SOL, FA, MI, RE, DO, //ODE A LA JOIE
+     MI, FA, SOL, FA, MI, RE, MI, RE, MI, //OLE
+     DO, SOL, FA, DO, MI, MI, RE, DO, SOL, //
+     DO, SOL, SOL, FA, RE, FA, SOL, RE, MI, //SUZUKI
+     MI, FA, SOL, SOL, MI, SOL, DO, SOL, MI, //FORREST GUMP
      RE, SOL, SOL, DO, MI, SOL, MI, MI, DO,
      RE, SOL, SOL, DO, MI, SOL, MI, MI, DO};
 
@@ -100,48 +100,61 @@ class Keyboard
     void reset()
     {
       
-      index_next_button_in_code_ = 0;
-      error_count_keyboard_= 0;
       state_ = PAUSE;
       
-      last_time_note_playing_updated_ = 0;
-      digitalWrite(speaker_pin_,LOW);
-      current_cycle_number_ = 0;
-      
-      first_time_play_feedback_correct_ = true;
-      first_time_play_feedback_wrong_ = true;
-      
-      // Choose a code randomly among the ones in the database
-      code_index_ = random(1, 10);
-      Serial.print("Selected code: ");
-      Serial.println(code_index_);
-
-      // Indicate the sequence and shift value to the user
-      indicateNumberWithLedsCode(code_index_);
-
-      // Generate a random shift
-      shift_ = random(1,5);
-      Serial.print("Selected shift: ");
-      Serial.println(shift_);
-
-      indicateNumberWithLedsShift(shift_);
     }
+
+   void start()
+   {
+    if (state_ == PAUSE){ //Game is on pause
+
+        last_time_note_playing_updated_ = 0;
+        digitalWrite(speaker_pin_,LOW);
+        current_cycle_number_ = 0;
+        
+        first_time_play_feedback_correct_ = true;
+        first_time_play_feedback_wrong_ = true;
+
+        index_next_button_in_code_ = 0;
+        error_count_keyboard_= 0;
+        keyboard_solved_ = false;
+
+        // Choose a code randomly among the ones in the database
+        code_index_ = random(1, 10);
+        Serial.println("Keyboard : ");
+        
+        Serial.print("Selected code : ");
+        Serial.println(code_index_);
+  
+        // Indicate the sequence and shift value to the user
+        indicateNumberWithLedsCode(code_index_);
+  
+        // Generate a random shift
+        shift_ = random(1,5);
+        Serial.print("Selected shift : ");
+        Serial.println(shift_);
+  
+        indicateNumberWithLedsShift(shift_);
+
+        state_ = GAME;
+        
+        return;
+    }
+       
+   }
+
+
 
 
    void update_keyboard()
     {
       
       if (state_ == PAUSE){ //Game is on pause
-
-        if(game_launched == true)
-        {
-        state_ = GAME;
         return;
-        }
       }
 
       else if(state_ == GAME){ 
-
+          //Serial.println(analogRead(BUTTONS_PIN));
           button_keyboard.update();
         
           for(int i=0; i<BUTTONS_TOTAL; ++i)
@@ -211,7 +224,7 @@ class Keyboard
 
         if(input_value_ == codeValueAt(index_next_button_in_code_)) // has the user hit the next key in the sequence?
         {
-            Serial.print("Correct input => ");
+            Serial.print("Keyboard : Correct input => ");
             Serial.print(index_next_button_in_code_ + 1);
             Serial.print(" / ");
             Serial.println(CODE_LENGTH);
@@ -221,7 +234,8 @@ class Keyboard
             if(index_next_button_in_code_ == CODE_LENGTH) // is that the last key of the sequence?
             {
               
-              Serial.println("Congrats, you completed the code!");
+              Serial.println("Keyboard Solved");
+              keyboard_solved_ = true;
               state_ = CODE_FOUND;
             }
     
@@ -237,7 +251,7 @@ class Keyboard
           
         else
         {
-            Serial.println("Wrong input. Start again from scratch.");
+            Serial.println("Keyboard : Wrong input. Start again from scratch.");
     
             state_ = PLAY_FEEDBACK_WRONG;
             
@@ -451,6 +465,7 @@ class Keyboard
     int input_value_; //Last input from the user (for check_input_value)
     int index_next_button_in_code_;
     int error_count_keyboard_;
+    boolean keyboard_solved_;
     State state_;
 
     //Variables utiles pour note_playing
@@ -461,6 +476,7 @@ class Keyboard
     unsigned long previousMillis_correct_led_;
     boolean first_time_play_feedback_correct_;
 
+    //Play Feedback Error
     unsigned long previousMillis_error_led_;
     boolean first_time_play_feedback_wrong_;
         

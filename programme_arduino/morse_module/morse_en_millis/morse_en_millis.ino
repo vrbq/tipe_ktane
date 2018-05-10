@@ -1,10 +1,10 @@
 //https://forum.arduino.cc/index.php?topic=492308.0 morse
 //https://www.carnetdumaker.net/articles/faire-plusieurs-choses-la-fois-avec-une-carte-arduino/ utilisation de la fontion millis
-const int led = 9;  //led du morse
+const int led = 51;  //led du morse
 const int buzz = 6;
-const int led2 = 8; //led verte qui indique si c'est réussi ou pas
+const int led2 = 49; //led verte qui indique si c'est réussi ou pas
 const int temps = 250;   // Durée d'un point (durée de référence)
-int bouton = 7; // bouton pour saisir le numéro du mot
+int bouton = 47; // bouton pour saisir le numéro du mot
 byte etat;
 byte etat2;
 unsigned long previousMillis = 0;
@@ -22,11 +22,13 @@ int compteur = 0;
 String message = "";  // Ne pas mettre d'accent dans le message
 
 void setup() {
+
   module = false; // etat du module
   etat = HIGH;
   pinMode(bouton, INPUT);
   pinMode(buzz, OUTPUT);
   Serial.begin(9600);
+  Serial.println("test1");
   randomSeed(analogRead(0));
   pinMode(led, OUTPUT); 
   pinMode(led2, OUTPUT);
@@ -132,7 +134,11 @@ void setup() {
 void loop() {    //message --> -.-.;....;..;--;..;.| message morse du mot chimie
 digitalWrite(led, etat);
 digitalWrite(led2,etat2);
+
 buttonstate = digitalRead(bouton);
+/*Serial.println("Button state :");
+Serial.println(buttonstate);*/
+
 unsigned long currentMillis = millis();
 if (compt == 0 and compt2 ==0){
   if (message.substring(i, i+1) == "-" ) { // cas du "long"
@@ -182,17 +188,20 @@ else if ((compt == 2 or compt2 == 1) and (message.substring(i+1,i+2) == "-" or m
 }
 
 if (buttonstate == HIGH and currentMillis - previousMillis2 >=300){  // le temps de 300 millis sert a éviter le rebond (j'ai pas réussi avec les condensateurs masi bon ca marche bien logiciellement) 
- ++ compteur;
+  ++ compteur;
   previousMillis2 = currentMillis;
+  Serial.print("Compteur is on ");
   Serial.println(compteur);
 }
 if (compteur > 0 and currentMillis - previousMillis2 >= 5000){
   if (compteur == alea){
+     Serial.println("Gagné");
       module = true;
       etat2 = HIGH;
       etat = LOW;
     }
-  else if (compteur > alea){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
+  else if (compteur != alea){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
+    Serial.println("Perdu");
     module = false; // il faut changer ca dans le programme final et faire un compteur d'erreurs à la place
     i = 50; // c'est une valeur lambda superieure à la longueur des mots 
     etat = HIGH;
