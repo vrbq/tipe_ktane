@@ -8,6 +8,13 @@ observation : when this line is no longer commented on, the program still compil
 idea: wrong syntax?
 
 
+- variable "game_laucnhed"
+
+observation : not declared in not main's sketch
+
+idea : don't know HOW we can declared this variable
+
+
 - State Timer Sound (timer.h)
 
 observation : The module arrives in the state but once inside, the condition:
