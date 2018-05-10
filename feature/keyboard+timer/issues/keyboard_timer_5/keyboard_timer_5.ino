@@ -17,11 +17,12 @@ int error_count_total = 0;
 
 
   // CONSTANTES START BOUTON
-const int button_start_bomb_pin = A2;            
-const int nb_button_start_bomb = 1;
-const int button_start_bomb_values[nb_button_start_bomb] = {512};
+const int BUTTON_START_BOMB_PIN = A2;            
+const int NB_BUTTON_START_BOMB = 1;
+const int BUTTON_START_BOMB_VALUES[NB_BUTTON_START_BOMB] = {512};
+
 const int button_launch_bomb = 0;
-AnalogMultiButton button_start_bomb(button_start_bomb_pin, nb_button_start_bomb, button_start_bomb_values);
+AnalogMultiButton button_start_bomb(BUTTON_START_BOMB_PIN, NB_BUTTON_START_BOMB, BUTTON_START_BOMB_VALUES);
 
 
 ///////////////// KEYBOARD //////////////////
@@ -46,6 +47,7 @@ void setup()
 
   Serial.begin(9600); //set monitor display
   randomSeed(analogRead(0));  //re-seed a new random value
+  pinMode(BUTTON_START_BOMB_PIN, INPUT);
 
   //KEYBOARD
   keyboard = Keyboard(BUTTONS_TOTAL, SPEAKER_PIN, NUM_LEDS, LED_PINS); //definition of keyboard class
@@ -53,7 +55,7 @@ void setup()
 
   //TIMER 
   timer = Timer(); //definition of timer class
-  pinMode(button_start_bomb_pin, INPUT);
+  
 
   //MORSE
   //morse = Morse();

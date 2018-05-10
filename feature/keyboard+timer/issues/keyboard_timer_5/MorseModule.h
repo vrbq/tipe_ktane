@@ -9,12 +9,11 @@ byte etat_led_morse; //etat
 byte etat_led_victory; //etat_led_victory
 
   // CONSTANTES BOUTON MORSE
-const int button_morse_pin = A8;            
-const int nb_button_morse = 1;
-const int button_morse_values[nb_button_morse] = {512};
-const int buttonmorse1 = 0;
+const int BUTTON_MORSE_PIN = A8;            
+const int NB_BUTTON_MORSE = 1;
+const int BUTTON_MORSE_VALUES[NB_BUTTON_MORSE] = {512};
 
-AnalogMultiButton button_morse(button_morse_pin, nb_button_morse, button_morse_values);
+AnalogMultiButton button_morse(BUTTON_MORSE_PIN, NB_BUTTON_MORSE, BUTTON_MORSE_VALUES);
 
 
   //CONSTANTES TEMPS MORSE
@@ -264,8 +263,6 @@ class Morse
       }
    
     }
-
-    //VARIABLES INTERNES A LA CLASSE MORSE
 };
 
 #endif

@@ -5,13 +5,13 @@
 
 
 // NOT SURE IT IS USEFUL ?
-int etat_button_timer_pin = 0;
+//int etat_button_timer_pin = 0;
 
 
 
   // VARIABLES RELATIVES AU TEMPS
 long time_elapsed_since_launched_sec = 0; //Time elapsed since the timer was launched
-long temps_max_bomb;  
+long time_max_bomb;  
 
 
   //BUZZER
@@ -19,9 +19,7 @@ const int buzzer_timer_pin = 52;
 const int note_duration = 165;
 
 
-
-
-SevSeg sevseg; //7 segment du timer
+SevSeg sevseg; //7 segment of timer
 
 
 class Timer
@@ -70,7 +68,7 @@ class Timer
           
          if (game_launched == true) {
           
-            temps_max_bomb = 60; //s                                             
+            time_max_bomb = 60; //s                                             
             state_ = TIMER_RUN;
             Serial.println("Launched");
             time_timer_launched_ = millis();
@@ -92,14 +90,14 @@ class Timer
               return;
             }*/
             
-            if(time_elapsed_since_launched_sec >= temps_max_bomb)
+            if(time_elapsed_since_launched_sec >= time_max_bomb)
             {
               Serial.println("Bomb exploded");
               state_ = PAUSE;
               return;
             }
             
-            sevseg.setNumber(calcul_temps_restant(time_elapsed_since_launched_sec), 2);
+            sevseg.setNumber(resting_time(time_elapsed_since_launched_sec), 2);
             sevseg.refreshDisplay();
 
             last_time_elapsed_ = time_elapsed_since_launched_sec;                
@@ -155,11 +153,11 @@ class Timer
     }
     
 
-    int calcul_temps_restant(int tempsActuel) {
-      int tempsRestantEnMinutesEtSecondes=0;
-      int minutesRestantes = (temps_max_bomb - tempsActuel) / 60;
-      int secondesRestantes = (temps_max_bomb - tempsActuel) % 60;
-      return tempsRestantEnMinutesEtSecondes = minutesRestantes * 100 + secondesRestantes;
+    int resting_time(int currentTime) {
+      int resting_time_in_min_and_sec=0;
+      int resting_min = (time_max_bomb - currentTime) / 60;
+      int resting_sec = (time_max_bomb - currentTime) % 60;
+      return resting_time_in_min_and_sec = resting_min * 100 + resting_sec;
     }
 
   

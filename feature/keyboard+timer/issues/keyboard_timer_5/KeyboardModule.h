@@ -5,6 +5,7 @@
 #include "Arduino.h"
 #include "timer.h"
 
+  //LCD DECLARATION
 #include <Wire.h>
 #include<LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 20, 2);
@@ -17,7 +18,7 @@ enum
   DO, RE, MI, FA, SOL
 };
 
-// DO, RE, MI, FA, SOL
+// FREQUENCIES {DO, RE, MI, FA, SOL}
 int NOTE_FREQUENCIES[] = {262, 294, 330, 349, 392};
 
 
@@ -27,18 +28,12 @@ const int BUTTONS_PIN = A1;
 const int SPEAKER_PIN = 53;
 
 const int NUM_LEDS = 6;
-const int LED_PINS[NUM_LEDS] = {19, 14, 15, 16, 17, 18}; // R, G, Y, W, Error, Victory
+const int LED_PINS[NUM_LEDS] = {19, 14, 15, 16, 17, 18}; // Red, Green, Yellow, White, Error, Victory
 
 const int BUTTONS_TOTAL = 5;
 const int BUTTONS_VALUES[BUTTONS_TOTAL] = {170, 370, 520, 840, 930};
 
 AnalogMultiButton button_keyboard(BUTTONS_PIN, BUTTONS_TOTAL, BUTTONS_VALUES);
-
-
-
-//// DECLARATION POUR LE TIMER
-
-
 
 
 // Dictionary of codes
@@ -101,7 +96,7 @@ class Keyboard
         return (int) CODE_DB[code_index_ * CODE_LENGTH + index];
     }
 
-    /////////////////// CONSTRUCTEUR //////////////
+    /////////////////// CONSTRUCTOR //////////////
     void reset()
     {
       
@@ -131,13 +126,6 @@ class Keyboard
 
       indicateNumberWithLedsShift(shift_);
     }
-
-    void playNote(int input_value)
-    {
-      //buzz(speaker_pin_, NOTE_FREQUENCIES[input_value],note_duration);
-    }
-
-
 
 
    void update_keyboard()
@@ -181,7 +169,7 @@ class Keyboard
       {
         int frequency = NOTE_FREQUENCIES[input_value_];
         
-        long delayValue = 1000000 / frequency / 2; //delay en microsecondes
+        long delayValue = 1000000 / frequency / 2; //delay in microsecondes
         long numCycles = frequency * note_duration / 1000;
 
         unsigned long current_time = micros();
@@ -301,9 +289,7 @@ class Keyboard
           first_time_play_feedback_wrong_ = true;
           state_ = GAME;
         }
-    
 
-        
       }
 
       else if(state_ == CODE_FOUND){
@@ -318,32 +304,84 @@ class Keyboard
 
 
 
-    void indicateNumberWithLedsCode (int number)
+    void indicateNumberWithLedsCode (int number) //INDICATION : BINARY MODE
     {
       
+      // led_pins_[0] = 1
+      // led_pins_[2] = 2
+      // led_pins_[3] = 4
+      // led_pins_[4] = 8
 
-      if(number == 1)
+      if(number == 1) 
       {
-        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[0],HIGH);
         digitalWrite(led_pins_[1],LOW);
+        digitalWrite(led_pins_[2],LOW);
+        digitalWrite(led_pins_[3],LOW);
       }
 
       if(number == 2)
       {
-        digitalWrite(led_pins_[0],HIGH);
-        digitalWrite(led_pins_[1],LOW);
+        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[1],HIGH);
+        digitalWrite(led_pins_[2],LOW);
+        digitalWrite(led_pins_[3],LOW);
       }
 
       if(number == 3)
       {
-        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[0],HIGH);
         digitalWrite(led_pins_[1],HIGH);
+        digitalWrite(led_pins_[2],LOW);
+        digitalWrite(led_pins_[3],LOW);
       }
 
       if(number == 4)
       {
+        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[1],LOW);
+        digitalWrite(led_pins_[2],HIGH);
+        digitalWrite(led_pins_[3],LOW);
+      }
+
+      if(number == 5)
+      {
+        digitalWrite(led_pins_[0],HIGH);
+        digitalWrite(led_pins_[1],LOW);
+        digitalWrite(led_pins_[2],HIGH);
+        digitalWrite(led_pins_[3],LOW);
+      }
+
+      if(number == 6)
+      {
+        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[1],HIGH);
+        digitalWrite(led_pins_[2],HIGH);
+        digitalWrite(led_pins_[3],LOW);
+      }
+
+      if(number == 7)
+      {
         digitalWrite(led_pins_[0],HIGH);
         digitalWrite(led_pins_[1],HIGH);
+        digitalWrite(led_pins_[2],HIGH);
+        digitalWrite(led_pins_[3],LOW);
+      }
+
+      if(number == 8)
+      {
+        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[1],LOW);
+        digitalWrite(led_pins_[2],LOW);
+        digitalWrite(led_pins_[3],HIGH);
+      }
+
+      if(number == 9)
+      {
+        digitalWrite(led_pins_[0],HIGH);
+        digitalWrite(led_pins_[1],LOW);
+        digitalWrite(led_pins_[2],LOW);
+        digitalWrite(led_pins_[3],HIGH);
       }
       
     }
@@ -353,69 +391,59 @@ class Keyboard
     {
      if(number == 1)
       {
-        digitalWrite(led_pins_[2],LOW);
-        digitalWrite(led_pins_[3],LOW);
+        lcd.init();  // initialisation of lcd scree
+        lcd.backlight(); // send the message
+        lcd.setCursor(0, 0);
+        lcd.print("Serial number :");
+        lcd.setCursor(0,1);
+        lcd.print("SHIFT IS 1");
       }
 
       if(number == 2)
       {
-        digitalWrite(led_pins_[2],HIGH);
-        digitalWrite(led_pins_[3],LOW);
+        lcd.init();  
+        lcd.backlight(); 
+        lcd.setCursor(0, 0);
+        lcd.print("Serial number :");
+        lcd.setCursor(0,1);
+        lcd.print("SHIFT IS 2");
       }
 
       if(number == 3)
       {
-        digitalWrite(led_pins_[2],LOW);
-        digitalWrite(led_pins_[3],HIGH);
+        lcd.init(); 
+        lcd.backlight();
+        lcd.setCursor(0, 0);
+        lcd.print("Serial number :");
+        lcd.setCursor(0,1);
+        lcd.print("SHIFT IS 3");
       }
 
       if(number == 4)
       {
-        digitalWrite(led_pins_[2],HIGH);
-        digitalWrite(led_pins_[3],HIGH);
+        lcd.init();  
+        lcd.backlight();
+        lcd.setCursor(0, 0);
+        lcd.print("Serial number :");
+        lcd.setCursor(0,1);
+        lcd.print("SHIFT IS 4");
       }
-      
-    }
 
-
-
-    /*void blinkLedAndBeep(int led_pin, int speaker_pin, int duration, int beep_frequency=DEFAULT_BEEP_FREQUENCY)
-    {
-      digitalWrite(led_pin, HIGH);
-      buzz(speaker_pin, beep_frequency,duration);
-      
-      digitalWrite(led_pin, LOW);
-    }
-
-    void playErrorSequence()
-    {
-      
-      const int error_pin = led_pins_[4];
-      digitalWrite(error_pin, HIGH);
-      delay(note_duration);
-      for(int i=0; i<2; ++i)
+      if(number == 5)
       {
-        //buzz(speaker_pin_, DEFAULT_BEEP_FREQUENCY,90);
-        delay(90);
+        lcd.init();
+        lcd.backlight();
+        lcd.setCursor(0, 0);
+        lcd.print("Serial number :");
+        lcd.setCursor(0,1);
+        lcd.print("SHIFT IS 5");
       }
-      digitalWrite(error_pin, LOW);
+      
+      
     }
 
-    void playVictorySequence()
-    {
-      const int victory_pin = led_pins_[5];
-      digitalWrite(victory_pin, HIGH);
-      delay(note_duration);
-      for(int i=0; i<2; ++i)
-      {
-        //buzz(speaker_pin_, DEFAULT_BEEP_FREQUENCY,180); //le 180 etait 90 a la base, pour le "error"
-        //delay(90);
-        //noTone(speaker_pin_);
-        delay(90);
-      }
-    }*/
 
-    /////// VARIABLES INTERNE DE LA CLASSE
+    /////// INTERN VARIABLES TO KEYBOARD CLASS
 
     int num_inputs_;
     int code_index_;
