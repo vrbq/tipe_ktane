@@ -15,6 +15,10 @@ boolean game_launched = false;
 
 int error_count_total = 0;
 
+  //LED ERROR
+const int led_error_1 = 44;
+const int led_error_2 = 46;
+
 
   // CONSTANTES START BOUTON
 int button_launch_bomb = 48;
@@ -47,6 +51,10 @@ void setup()
   
   randomSeed(analogRead(0));  //re-seed a new random value
   pinMode(button_launch_bomb, INPUT);
+  
+  pinMode(led_error_1, OUTPUT);
+  pinMode(led_error_2, OUTPUT);
+
 
   //KEYBOARD
   keyboard = Keyboard(BUTTONS_TOTAL, SPEAKER_PIN, NUM_LEDS, LED_PINS); //definition of keyboard class
@@ -57,6 +65,7 @@ void setup()
   
   //MORSE
   morse = Morse();
+  lcd_morse_and_error.init(); //Initialization LCD MORSE + ERROR COUNT
   
 }
 
@@ -66,7 +75,7 @@ void setup()
 void loop()
 {
   
-       
+      
       if(game_launched == false and digitalRead(button_launch_bomb) == HIGH and bomb_explosed == false and bomb_solved == false) //to relaunch the bomb, we need to remove condition : bomb_explosed == false
       {
         Serial.println("Starting modules : Morse + Keyboard");
@@ -95,9 +104,20 @@ void loop()
   
         ////// COMPTEUR D'ERREUR TOTAL /////
   
-        error_count_total = keyboard.error_count_keyboard_ + error_count_morse; //Penser a ajouter les erreurs des autres modules quand ils seront faits
+        error_count_total = keyboard.error_count_keyboard_ + error_count_morse; 
+
+        if (error_count_total == 1 )
+        {
+          digitalWrite(led_error_1, HIGH);
+        }
+
+        if (error_count_total == 2)
+        {
+          digitalWrite(led_error_1, HIGH);
+          digitalWrite(led_error_2, HIGH);
+        }
   
-        if (error_count_total == 100)
+        if (error_count_total == 3)
         {
           Serial.println("You loose ! :(");
           Serial.println("Cause : too many errors.");
@@ -115,6 +135,7 @@ void loop()
           Serial.println("WOW ! YOU SAVE THE WORLD ! CONGRATS !");
           bomb_solved = true;
         }
+
         
       }
 

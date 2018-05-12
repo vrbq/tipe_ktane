@@ -8,7 +8,8 @@
   //LCD DECLARATION
 #include <Wire.h>
 #include<LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27, 20, 2);
+LiquidCrystal_I2C lcd_keyboard(0x27, 20, 2); //SERIAL NUMBER : KEYBOARD
+LiquidCrystal_I2C lcd_morse_and_error(0x27, 20, 2); //COMPTEUR MORSE + ERROR COUNT
 
 #define DEFAULT_BEEP_DURATION 120
 #define DEFAULT_BEEP_FREQUENCY 440
@@ -45,11 +46,11 @@ const byte CODE_DB[CODE_LENGTH * CODE_DB_SIZE] =
      DO, DO, RE, DO, FA, MI, DO, DO, RE, //FRERES JACQUES
      MI, MI, FA, SOL, SOL, FA, MI, RE, DO, //ODE A LA JOIE
      MI, FA, SOL, FA, MI, RE, MI, RE, MI, //OLE
-     DO, SOL, FA, DO, MI, MI, RE, DO, SOL, //
+     DO, SOL, FA, DO, MI, MI, RE, DO, SOL, //AU PIF
      DO, SOL, SOL, FA, RE, FA, SOL, RE, MI, //SUZUKI
      MI, FA, SOL, SOL, MI, SOL, DO, SOL, MI, //FORREST GUMP
-     RE, SOL, SOL, DO, MI, SOL, MI, MI, DO,
-     RE, SOL, SOL, DO, MI, SOL, MI, MI, DO};
+     RE, SOL, FA, DO, MI, SOL, MI, FA, DO, //AU PIF
+     MI, RE, DO, RE, MI, RE, MI, SOL, SOL}; //AU PIF
 
 
 
@@ -120,7 +121,7 @@ class Keyboard
         keyboard_solved_ = false;
 
         // Choose a code randomly among the ones in the database
-        code_index_ = random(1, 10);
+        code_index_ = random(0, 9);
         Serial.println("Keyboard : ");
         
         Serial.print("Selected code : ");
@@ -130,7 +131,7 @@ class Keyboard
         indicateNumberWithLedsCode(code_index_);
   
         // Generate a random shift
-        shift_ = random(1,5);
+        shift_ = random(0,5);
         Serial.print("Selected shift : ");
         Serial.println(shift_);
   
@@ -326,39 +327,16 @@ class Keyboard
       // led_pins_[3] = 4
       // led_pins_[4] = 8
 
-      if(number == 1) 
+      if(number == 0) //A
       {
         digitalWrite(led_pins_[0],HIGH);
-        digitalWrite(led_pins_[1],LOW);
-        digitalWrite(led_pins_[2],LOW);
-        digitalWrite(led_pins_[3],LOW);
-      }
-
-      if(number == 2)
-      {
-        digitalWrite(led_pins_[0],LOW);
-        digitalWrite(led_pins_[1],HIGH);
-        digitalWrite(led_pins_[2],LOW);
-        digitalWrite(led_pins_[3],LOW);
-      }
-
-      if(number == 3)
-      {
-        digitalWrite(led_pins_[0],HIGH);
-        digitalWrite(led_pins_[1],HIGH);
-        digitalWrite(led_pins_[2],LOW);
-        digitalWrite(led_pins_[3],LOW);
-      }
-
-      if(number == 4)
-      {
-        digitalWrite(led_pins_[0],LOW);
         digitalWrite(led_pins_[1],LOW);
         digitalWrite(led_pins_[2],HIGH);
-        digitalWrite(led_pins_[3],LOW);
+        digitalWrite(led_pins_[3],HIGH);
       }
+      
 
-      if(number == 5)
+      if(number == 1) //B
       {
         digitalWrite(led_pins_[0],HIGH);
         digitalWrite(led_pins_[1],LOW);
@@ -366,23 +344,47 @@ class Keyboard
         digitalWrite(led_pins_[3],LOW);
       }
 
-      if(number == 6)
+      if(number == 2) //C
+      {
+        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[1],LOW);
+        digitalWrite(led_pins_[2],HIGH);
+        digitalWrite(led_pins_[3],HIGH);
+      }
+
+      if(number == 3) //D
+      {
+        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[1],HIGH);
+        digitalWrite(led_pins_[2],LOW);
+        digitalWrite(led_pins_[3],HIGH);
+      }
+
+      if(number == 4) //E
+      {
+        digitalWrite(led_pins_[0],LOW);
+        digitalWrite(led_pins_[1],LOW);
+        digitalWrite(led_pins_[2],LOW);
+        digitalWrite(led_pins_[3],LOW);
+      }
+
+      if(number == 5) //F
       {
         digitalWrite(led_pins_[0],LOW);
         digitalWrite(led_pins_[1],HIGH);
         digitalWrite(led_pins_[2],HIGH);
-        digitalWrite(led_pins_[3],LOW);
+        digitalWrite(led_pins_[3],HIGH);
       }
 
-      if(number == 7)
+      if(number == 6) //G
       {
         digitalWrite(led_pins_[0],HIGH);
         digitalWrite(led_pins_[1],HIGH);
         digitalWrite(led_pins_[2],HIGH);
-        digitalWrite(led_pins_[3],LOW);
+        digitalWrite(led_pins_[3],HIGH);
       }
 
-      if(number == 8)
+      if(number == 7) //H
       {
         digitalWrite(led_pins_[0],LOW);
         digitalWrite(led_pins_[1],LOW);
@@ -390,7 +392,7 @@ class Keyboard
         digitalWrite(led_pins_[3],HIGH);
       }
 
-      if(number == 9)
+      if(number == 8) //I
       {
         digitalWrite(led_pins_[0],HIGH);
         digitalWrite(led_pins_[1],LOW);
@@ -403,54 +405,45 @@ class Keyboard
 
     void indicateNumberWithLedsShift (int number)
     {
-     if(number == 1)
+
+     if(number == 0) //AU MOINS QUATRE VOYELLES DANS LE SERIAL
       {
-        lcd.init();  // initialisation of lcd scree
-        lcd.backlight(); // send the message
-        lcd.setCursor(0, 0);
-        lcd.print("Serial number :");
-        lcd.setCursor(0,1);
-        lcd.print("SHIFT IS 1");
+        lcd_keyboard.init();  // initialisation of lcd scree
+        lcd_keyboard.backlight(); // send the message
+        lcd_keyboard.setCursor(0, 0);
+        lcd_keyboard.print("o7?MhU9u?Mo5");
+      }
+    
+     if(number == 1) //SOMMES CHIFFRES SERIAL => NOMBRE PREMIER
+      {
+        lcd_keyboard.init();  // initialisation of lcd_keyboard scree
+        lcd_keyboard.backlight(); // send the message
+        lcd_keyboard.setCursor(0, 0);
+        lcd_keyboard.print("5DIdQ3?Rim3M");
       }
 
-      if(number == 2)
+      if(number == 2) //PRODUIT CHIFFRES SERIAL => PAIR
       {
-        lcd.init();  
-        lcd.backlight(); 
-        lcd.setCursor(0, 0);
-        lcd.print("Serial number :");
-        lcd.setCursor(0,1);
-        lcd.print("SHIFT IS 2");
+        lcd_keyboard.init();  
+        lcd_keyboard.backlight(); 
+        lcd_keyboard.setCursor(0, 0);
+        lcd_keyboard.print("r6sDa2?L?3X1M");
       }
 
-      if(number == 3)
+      if(number == 3) //ON PEUT FORMER LANOIX ou DELEGUE
       {
-        lcd.init(); 
-        lcd.backlight();
-        lcd.setCursor(0, 0);
-        lcd.print("Serial number :");
-        lcd.setCursor(0,1);
-        lcd.print("SHIFT IS 3");
+        lcd_keyboard.init(); 
+        lcd_keyboard.backlight();
+        lcd_keyboard.setCursor(0, 0);
+        lcd_keyboard.print("E3L6ed2ue1G3");
       }
 
-      if(number == 4)
+      if(number == 4) //SI AUCUN DES ELEMENTS NE CORRESPOND
       {
-        lcd.init();  
-        lcd.backlight();
-        lcd.setCursor(0, 0);
-        lcd.print("Serial number :");
-        lcd.setCursor(0,1);
-        lcd.print("SHIFT IS 4");
-      }
-
-      if(number == 5)
-      {
-        lcd.init();
-        lcd.backlight();
-        lcd.setCursor(0, 0);
-        lcd.print("Serial number :");
-        lcd.setCursor(0,1);
-        lcd.print("SHIFT IS 5");
+        lcd_keyboard.init();  
+        lcd_keyboard.backlight();
+        lcd_keyboard.setCursor(0, 0);
+        lcd_keyboard.print("T9c8I?2ov1?1");
       }
       
       

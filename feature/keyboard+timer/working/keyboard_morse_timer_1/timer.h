@@ -11,7 +11,7 @@ boolean time_out;
 
 
   //BUZZER
-const int buzzer_timer_pin = 52;
+const int buzzer_timer_pin = 50;
 const int note_duration = 165;
 
 
@@ -26,7 +26,7 @@ class Timer
    
    enum State
     {
-      PAUSE, TIMER_RUN, TIMER_SOUND, TIMER_STOP
+      PAUSE, TIMER_RUN, TIMER_SOUND, TIMER_STOP, TIMER_SOUND_60SEC
     };
 
 
@@ -38,6 +38,8 @@ class Timer
     byte segmentPins[] = {6, 7, 8, 9, 10, 11, 12, 13};
     sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins);
     sevseg.setBrightness(90);
+
+    pinMode(buzzer_timer_pin, OUTPUT);
 
     reset();
 
@@ -60,11 +62,13 @@ class Timer
     if(state_ == PAUSE)
         {
                        
-           time_max_bomb = 300; //s                                             
+           time_max_bomb = 300; // in sec                                           
            Serial.print("Launched for : ");
            Serial.print(time_max_bomb);
-           Serial.println(" secondes");
+           Serial.println(" seconds");
            time_timer_launched_ = millis();
+
+           last_time_elapsed_ = 0;
            time_out = false;
 
            state_ = TIMER_RUN;
@@ -80,6 +84,7 @@ class Timer
 
         if(state_ == PAUSE)
         {
+            digitalWrite(buzzer_timer_pin,LOW);
            return;
         }
          
@@ -88,14 +93,17 @@ class Timer
         {
            
             time_elapsed_since_launched_sec = (millis() - time_timer_launched_) / 1000; //en s
-            //Serial.println(time_elapsed_since_launched_sec);
+            /*Serial.print("time_elapsed_since_launched_sec :");
+            Serial.println(time_elapsed_since_launched_sec);
+            Serial.print("last_time_elapsed_ : ");
+            Serial.println(last_time_elapsed_);*/
 
-            /*if(time_elapsed_since_launched_sec != last_time_elapsed_)
+            if(time_elapsed_since_launched_sec != last_time_elapsed_) //Beep - Beep every sec
             {
-              Serial.println("A beep is playing");
+              //Serial.println("A beep is playing");
               state_ = TIMER_SOUND;
               return;
-            }*/
+            }
             
             if(time_elapsed_since_launched_sec >= time_max_bomb)
             {
@@ -106,41 +114,46 @@ class Timer
             }
             
             sevseg.setNumber(resting_time(time_elapsed_since_launched_sec), 2);
-            sevseg.refreshDisplay();
-
-            last_time_elapsed_ = time_elapsed_since_launched_sec;                
+            sevseg.refreshDisplay();             
           
         }
 
 
-        /*if(state_ == TIMER_SOUND)
+        if(state_ == TIMER_SOUND)
         {
             int frequency = 330;
+            //Serial.println("In TIMER SOUND");
             
             long delayValue = 1000000 / frequency / 2; //delay en microsecondes
-            //Serial.println("Delay Value is");
+            //Serial.print("Delay Value is : ");
             //Serial.println(delayValue);
             long numCycles = frequency * 165 / 1000; //165 = note_duration (defined in KeyboardModule.h)
     
             unsigned long current_time = micros();
-            //Serial.println("Current time is");
+            //Serial.print("Current time is : ");
             //Serial.println(current_time);
             
             if(current_time - last_time_note_playing_updated_ >= delayValue)
             {       
+              //Serial.println("Je suis bien rentré dans le if current_time - last_time_note_playing_updated_ >= delayValue");
               int state_targetpin = digitalRead(buzzer_timer_pin);
+              //Serial.print("digitalRead(buzzer_timer_pin) : ");
+              //Serial.println(digitalRead(buzzer_timer_pin));
     
               if (state_targetpin == HIGH)
               {
                 digitalWrite(buzzer_timer_pin,LOW);
                 current_cycle_number_ ++;
-                //Serial.println("Current cycle is");
+                //Serial.print("Current cycle is : ");
                 //Serial.println(current_cycle_number_);
               }
     
               else
               {
-                digitalWrite(buzzer_timer_pin,HIGH);  
+                //Serial.println("Je suis rentre dans le else");
+                digitalWrite(buzzer_timer_pin,HIGH); //DEBUG : ICI, LE DIGITALREAD PLUS BAS MONTRE QUE LE BUZZER_TIMER_PIN NE PASSE PAS HIGH (TOUJOURS 0)
+                // LE BUG : NOT DECLARED OUTPUT LE BUZZER_TIMER_PIN
+                //Serial.println(digitalRead(buzzer_timer_pin));
               }
               
             last_time_note_playing_updated_ = micros();
@@ -149,14 +162,17 @@ class Timer
     
             if(current_cycle_number_ == numCycles)
             {
-              Serial.println("Bien sorti dans le timer sound");
+              //Serial.println("Bien sorti dans le timer sound");
               state_ = TIMER_RUN;
               current_cycle_number_ = 0;
               last_time_note_playing_updated_ = 0;
               digitalWrite(buzzer_timer_pin,LOW);   //this is not necessary
+
+              last_time_elapsed_ = time_elapsed_since_launched_sec;
             }
             
-          }*/
+          }
+
            
     }
     

@@ -13,7 +13,10 @@ byte etat_led_victory; //etat_led_victory
   // CONSTANTES BOUTON MORSE
 
 int bouton = 47; // bouton pour saisir le numéro du mot
+int button_submit_answer = 45;
+
 int buttonstate  = 0;
+int button_submit_answer_state = 0;
 
 
   //CONSTANTES TEMPS MORSE
@@ -51,6 +54,8 @@ class Morse
     Morse(){
       pinMode(led_morse, OUTPUT); 
       pinMode(led_victory, OUTPUT);
+      pinMode(bouton, INPUT);
+      pinMode(button_submit_answer_state, INPUT);
 
       reset();
     }
@@ -73,19 +78,19 @@ class Morse
         switch (alea) // les différents mots dans la fonciton switch case
         { 
           case 1:
-            message = "TOTO";
+            message = "MORSE";
             Serial.println(message);
             break;
           case 2:
-            message = "CHIMIE";
+            message = "RATEAU";
             Serial.println(message);
             break;
           case 3:
-            message = "TINTIN";
+            message = "THERMO";
             Serial.println(message);
             break;
           case 4:
-            message = "EPONGE";
+            message = "TIMEO";
             Serial.println(message);
             break;
           case 5:
@@ -93,19 +98,19 @@ class Morse
             Serial.println(message);
             break;
           case 6:
-            message = "MATHS";
+            message = "MCLFY";
             Serial.println(message);
             break;
           case 7:
-            message = "PLAGE";
+            message = "TORDRE";
             Serial.println(message);
             break;
           case 8:
-            message = "NEYMAR";
+            message = "BEATLES";
             Serial.println(message);
             break;
           case 9:
-            message = "TIPE";
+            message = "BEATLES";
             Serial.println(message);
             break; 
         }
@@ -181,20 +186,21 @@ class Morse
         digitalWrite(led_victory, etat_led_victory);
         
         buttonstate = digitalRead(bouton);
+        button_submit_answer_state = digitalRead(button_submit_answer);
         
         unsigned long currentMillis = millis();
         if (compt_fin_point_tiret == 0 and compt_fin_lettre ==0){
           if (message.substring(i, i+1) == "-" ) { // cas du "long"
-            inter = 3*temps;
+            inter = 3*temps; //3
           }
           else if (message.substring(i, i+1) == "." ) { // cas du "court"
-            inter = temps;
+            inter = temps; //1
             }
           else if (message.substring(i, i+1) == ";" ) { //espace entre chaque lettre
-            inter = 3*temps;
+            inter = 3*temps; //ancien 3
           }
           else if (message.substring(i, i+1) == "|" ) {//espacement de 7 temps entre chaque mots
-            inter = 7*temps;
+            inter = 5*temps; //ancien 7
           }
         }
     
@@ -249,15 +255,52 @@ class Morse
           etat_led_morse = HIGH; // comme le prochain caractère et un tiret ou un point il faut mettre l'état en high
         }
         
-        if (buttonstate == HIGH and currentMillis - previousMillis2 >=100){  // le temps de 100 millis sert a éviter le rebond (j'ai pas réussi avec les condensateurs masi bon ca marche bien logiciellement) 
+        if (buttonstate == HIGH and currentMillis - previousMillis2 >=300){  // le temps de 300 millis sert a éviter le rebond (j'ai pas réussi avec les condensateurs masi bon ca marche bien logiciellement) 
          ++ compteur;
           previousMillis2 = currentMillis;
-          Serial.println("Compteur is on : ");
+          
+          if (compteur == 10){ //Pour pouvoir boucler sans arrêt
+            compteur = 1;
+          }
+          
+          Serial.print("Compteur is on : ");
           Serial.println(compteur);
+
+          //Rafraichissement du Morse count
+          //lcd_keyboard.init();  // initialisation of lcd scree
+          lcd_keyboard.backlight(); // send the message
+          lcd_keyboard.setCursor(0, 1);
+          lcd_keyboard.print("Morse is on :");
+          lcd_keyboard.setCursor(14, 1);
+          lcd_keyboard.print(compteur);
+
+          
         }
    
-        
-        if (compteur > 0 and currentMillis - previousMillis2 >= 5000){
+        if (compteur > 0 and button_submit_answer_state == HIGH){
+          
+          if (compteur == alea){
+              Serial.println("Morse : Solved");
+              digitalWrite(led_morse, LOW);
+              digitalWrite(led_victory, HIGH);
+
+              lcd_keyboard.backlight(); // send the message
+              lcd_keyboard.setCursor(0, 1);
+              lcd_keyboard.print("Morse solved !");
+          
+              compteur = 0;
+              morse_solved = true;
+              state_ = PAUSE;
+            }
+            
+          else if (compteur != alea){
+            error_count_morse = error_count_morse + 1;
+            Serial.println("Morse : error");
+            compteur = 0; 
+          }
+          
+        }
+        /*if (compteur > 0 and currentMillis - previousMillis2 >= 5000){
           
           if (compteur == alea){
               Serial.println("Morse : Solved");
@@ -270,11 +313,11 @@ class Morse
             
           else if (compteur != alea){ // si le joueur attend plus de 5 secondes apres avoir appuyé une première fois il a perdu
             error_count_morse = error_count_morse + 1;
-            Serial.println("Morse : 1 error");
+            Serial.println("Morse : error");
             compteur = 0; 
           }
         
-        }
+        }*/
    
       }
     
