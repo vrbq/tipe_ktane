@@ -119,12 +119,16 @@ void loop()
   
         if (error_count_total == 3)
         {
+          beepend();
+          
           Serial.println("You loose ! :(");
           Serial.println("Cause : too many errors.");
           bomb_explosed = true;
         }
 
         if (time_out == true){
+          beepend();
+           
           Serial.println("You loose ! :(");
           Serial.println("Cause : run out of time");
           bomb_explosed = true;

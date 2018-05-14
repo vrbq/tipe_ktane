@@ -411,7 +411,7 @@ class Keyboard
         lcd_keyboard.init();  // initialisation of lcd scree
         lcd_keyboard.backlight(); // send the message
         lcd_keyboard.setCursor(0, 0);
-        lcd_keyboard.print("o7?MhU9u?Mo5");
+        lcd_keyboard.print("285-576-432");
       }
     
      if(number == 1) //SOMMES CHIFFRES SERIAL => NOMBRE PREMIER
@@ -419,7 +419,7 @@ class Keyboard
         lcd_keyboard.init();  // initialisation of lcd_keyboard scree
         lcd_keyboard.backlight(); // send the message
         lcd_keyboard.setCursor(0, 0);
-        lcd_keyboard.print("5DIdQ3?Rim3M");
+        lcd_keyboard.print("536-914-104");
       }
 
       if(number == 2) //PRODUIT CHIFFRES SERIAL => PAIR
@@ -427,7 +427,7 @@ class Keyboard
         lcd_keyboard.init();  
         lcd_keyboard.backlight(); 
         lcd_keyboard.setCursor(0, 0);
-        lcd_keyboard.print("r6sDa2?L?3X1M");
+        lcd_keyboard.print("222-574-137");
       }
 
       if(number == 3) //ON PEUT FORMER LANOIX ou DELEGUE
@@ -435,7 +435,7 @@ class Keyboard
         lcd_keyboard.init(); 
         lcd_keyboard.backlight();
         lcd_keyboard.setCursor(0, 0);
-        lcd_keyboard.print("E3L6ed2ue1G3");
+        lcd_keyboard.print("126-789-483");
       }
 
       if(number == 4) //SI AUCUN DES ELEMENTS NE CORRESPOND
@@ -443,7 +443,7 @@ class Keyboard
         lcd_keyboard.init();  
         lcd_keyboard.backlight();
         lcd_keyboard.setCursor(0, 0);
-        lcd_keyboard.print("T9c8I?2ov1?1");
+        lcd_keyboard.print("359-786-423");
       }
       
       
