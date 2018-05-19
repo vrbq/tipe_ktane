@@ -11,10 +11,9 @@ int etape = 0;
 int ep1 = 0;
 #include <MMA_7455.h>
 
-/* Case 1: Accelerometer on the I2C bus (most common) */
+
 MMA_7455 accel = MMA_7455(i2c_protocol);
-/* Case 2: Accelerometer on the SPI bus with CS on pin 2 */
-// MMA_7455 accel = MMA_7455(spi_protocol, A2);
+
 
 int16_t x, y, z;
 
@@ -44,9 +43,9 @@ void setup()
 }
 
 void loop(){
-  buttonstate = digitalRead(bouton);
+  buttonstate = digitalRead(bouton){
   if ( buttonstate == HIGH);
-    x = accel.readAxis10('x'); // on obtient le svaleurs sur 10 bits
+    x = accel.readAxis10('x'); // on obtient les valeurs sur 10 bits
     y = accel.readAxis10('y');
     z = accel.readAxis10('z');
   }
