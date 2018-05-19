@@ -23,14 +23,11 @@ enum
 int NOTE_FREQUENCIES[] = {262, 294, 330, 349, 392};
 
 
-
-
-const int BUTTONS_PIN = A1;
 const int SPEAKER_PIN = 53;
-
 const int NUM_LEDS = 6;
 const int LED_PINS[NUM_LEDS] = {19, 14, 15, 16, 17, 18}; // Red, Green, Yellow, White, Error, Victory
 
+const int BUTTONS_PIN = A1;
 const int BUTTONS_TOTAL = 5;
 const int BUTTONS_VALUES[BUTTONS_TOTAL] = {196, 430, 573, 855, 962};
 
