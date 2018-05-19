@@ -93,11 +93,7 @@ class Timer
         {
            
             time_elapsed_since_launched_sec = (millis() - time_timer_launched_) / 1000; //en s
-            /*Serial.print("time_elapsed_since_launched_sec :");
-            Serial.println(time_elapsed_since_launched_sec);
-            Serial.print("last_time_elapsed_ : ");
-            Serial.println(last_time_elapsed_);*/
-
+            
             if(time_elapsed_since_launched_sec != last_time_elapsed_) //Beep - Beep every sec
             {
               //Serial.println("A beep is playing");
