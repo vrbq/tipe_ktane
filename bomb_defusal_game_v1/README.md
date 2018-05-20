@@ -1,6 +1,6 @@
 # Bomb Defuse Game !
 
-<img src="circuit/real/global_photo.jpg"/>
+<img src="circuit/real/global_photo.jpg" width="350" />
 
 
 ## Dependencies
