@@ -7,8 +7,8 @@
 const int led_morse = 51;  //pin de la led du morse //led
 const int led_victory = 49; //led rouge victoire    //led2
 
-byte etat_led_morse; //etat
-byte etat_led_victory; //etat_led_victory
+byte state_led_morse;
+byte state_led_victory;
 
   // CONSTANTES BOUTON MORSE
 
@@ -20,15 +20,15 @@ int button_submit_answer_state = 0;
 
 
   //CONSTANTES TEMPS MORSE
-const int temps = 250;   // Durée d'un point (durée de référence)
+const int reference_time = 250;   // Durée d'un point (durée de référence)
 unsigned long previousMillis_led_morse = 0;
 unsigned long previousMillis2 = 0;  //CAS OU IL FAUT GERER LES REBONDS
 
-int compt_fin_point_tiret; //compt
-int compt_fin_lettre; //compt2
+int compt_end_point_tiret; //compt
+int compt_end_lettre; //compt2
 int i; //i
 
-int inter; //intervalle de temps où le message est transmis
+int intervall; //intervalle de temps où le message est transmis
 
 
   //CONSTANTES MORSE
@@ -67,7 +67,7 @@ class Morse
 
     void start()
     {
-      etat_led_morse = HIGH;
+      state_led_morse = HIGH;
       error_count_morse = 0;
       morse_solved = false;
       
@@ -182,47 +182,47 @@ class Morse
 
       else if(state_ == GAME){
         
-        digitalWrite(led_morse, etat_led_morse);
-        digitalWrite(led_victory, etat_led_victory);
+        digitalWrite(led_morse, state_led_morse);
+        digitalWrite(led_victory, state_led_victory);
         
         buttonstate = digitalRead(bouton);
         button_submit_answer_state = digitalRead(button_submit_answer);
         
         unsigned long currentMillis = millis();
-        if (compt_fin_point_tiret == 0 and compt_fin_lettre ==0){
+        if (compt_end_point_tiret == 0 and compt_end_lettre ==0){
           if (message.substring(i, i+1) == "-" ) { // cas du "long"
-            inter = 3*temps; //3
+            intervall = 3*reference_time; //3
           }
           else if (message.substring(i, i+1) == "." ) { // cas du "court"
-            inter = temps; //1
+            intervall = reference_time; //1
             }
           else if (message.substring(i, i+1) == ";" ) { //espace entre chaque lettre
-            inter = 3*temps; //ancien 3
+            intervall = 3*reference_time; //ancien 3
           }
           else if (message.substring(i, i+1) == "|" ) {//espacement de 7 temps entre chaque mots
-            inter = 5*temps; //ancien 7
+            intervall = 5*reference_time; //ancien 7
           }
         }
     
     
         
-          if(currentMillis - previousMillis_led_morse >= inter and (message.substring(i,i+1) == "-" or message.substring(i, i+1) == ".") ) { // à chaque fois que le temps indique par inter est dépassé on change l'état de la led
+          if(currentMillis - previousMillis_led_morse >= intervall and (message.substring(i,i+1) == "-" or message.substring(i, i+1) == ".") ) { // à chaque fois que le temps indique par inter est dépassé on change l'état de la led
             previousMillis_led_morse = currentMillis;
             if (message.substring(i,i+1) == "-"){// comme le tiret se fait en deux temps différents je change la longueur du temps a attendre pour la deuxieme partie
-              inter = temps;
+              intervall = reference_time;
             }
-            etat_led_morse = ! etat_led_morse; //Switch l'état
-            ++compt_fin_point_tiret;
+            state_led_morse = ! state_led_morse; //Switch l'état
+            ++compt_end_point_tiret;
           }
     
           
-          else if (currentMillis - previousMillis_led_morse >= inter and message.substring(i, i+1) == ";"){
-            ++compt_fin_lettre;
+          else if (currentMillis - previousMillis_led_morse >= intervall and message.substring(i, i+1) == ";"){
+            ++compt_end_lettre;
             previousMillis_led_morse = currentMillis;
           }
     
           
-          else if (currentMillis - previousMillis_led_morse >= inter and message.substring(i,i+1) == "|"){
+          else if (currentMillis - previousMillis_led_morse >= intervall and message.substring(i,i+1) == "|"){
             previousMillis_led_morse = currentMillis;
             ++i;
           }
@@ -232,27 +232,27 @@ class Morse
           
         if (i == message.length()){ // je sais pas pourquoi il faut mettre -1 mais sinon ca boucle pas donc bon message length = 21 pour alea = 2 et ca s'arrete a 20
           i = 0; // on boucle
-          etat_led_morse = HIGH;
+          state_led_morse = HIGH;
         }
     
     
     
         
-        if ((compt_fin_point_tiret == 2 or compt_fin_lettre == 1) and (message.substring(i+1,i+2) == ";" or message.substring(i+1, i+2) == "|")){ // un tiret ou un point se font toujous en deux temps d'où les intervalles 1 et 2 et le compteur
+        if ((compt_end_point_tiret == 2 or compt_end_lettre == 1) and (message.substring(i+1,i+2) == ";" or message.substring(i+1, i+2) == "|")){ // un tiret ou un point se font toujous en deux temps d'où les intervalles 1 et 2 et le compteur
           ++i; 
-          compt_fin_point_tiret=0;   //a chaque fois qu'un signal est transcrit on remet le compteur à 0 
-          compt_fin_lettre =0;
-          etat_led_morse = LOW; // comme le prochain caractère est un espacement avec la led éteinte je met l'état en low
+          compt_end_point_tiret=0;   //a chaque fois qu'un signal est transcrit on remet le compteur à 0 
+          compt_end_lettre =0;
+          state_led_morse = LOW; // comme le prochain caractère est un espacement avec la led éteinte je met l'état en low
         }
     
     
     
         
-        else if ((compt_fin_point_tiret == 2 or compt_fin_lettre == 1) and (message.substring(i+1,i+2) == "-" or message.substring(i+1, i+2) == ".")){ 
+        else if ((compt_end_point_tiret == 2 or compt_end_lettre == 1) and (message.substring(i+1,i+2) == "-" or message.substring(i+1, i+2) == ".")){ 
           ++i;
-          compt_fin_lettre =0;
-          compt_fin_point_tiret = 0;
-          etat_led_morse = HIGH; // comme le prochain caractère et un tiret ou un point il faut mettre l'état en high
+          compt_end_lettre =0;
+          compt_end_point_tiret = 0;
+          state_led_morse = HIGH; // comme le prochain caractère et un tiret ou un point il faut mettre l'état en high
         }
         
         if (buttonstate == HIGH and currentMillis - previousMillis2 >=300){  // le temps de 300 millis sert a éviter le rebond (j'ai pas réussi avec les condensateurs masi bon ca marche bien logiciellement) 

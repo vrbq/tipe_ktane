@@ -1,6 +1,6 @@
 # Bomb Defuse Game !
 
-<img src="circuit/bomb_defusal_real.jpg" width="350" />
+<img src="circuit/real/global.jpg" width="350" />
 
 
 ## Dependencies
@@ -10,13 +10,13 @@
 - [LiquidCrystal_I2C](https://github.com/marcoschwartz/LiquidCrystal_I2C)
 - [SevSeg](https://github.com/sparkfun/SevSeg)
 
-- [DueFlashStorage](https://github.com/sebnil/DueFlashStorage) - Not necesseray
-
 
 
 ## Building the circuit
 
-To finish
+- Global Circuit
+
+<img src="circuit/global_scheme.jpg" width="350" />
 
 
 ## Playing

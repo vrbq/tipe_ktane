@@ -23,9 +23,9 @@ enum
 int NOTE_FREQUENCIES[] = {262, 294, 330, 349, 392};
 
 
-const int SPEAKER_PIN = 53;
-const int NUM_LEDS = 6;
-const int LED_PINS[NUM_LEDS] = {19, 14, 15, 16, 17, 18}; // Red, Green, Yellow, White, Error, Victory
+const int speaker_pin = 53;
+const int num_leds = 6;
+const int led_pins[num_leds] = {19, 14, 15, 16, 17, 18}; // Red, Green, Yellow, White, Error, Victory
 
 const int BUTTONS_PIN = A1;
 const int BUTTONS_TOTAL = 5;
@@ -43,11 +43,11 @@ const byte CODE_DB[CODE_LENGTH * CODE_DB_SIZE] =
      DO, DO, RE, DO, FA, MI, DO, DO, RE, //FRERES JACQUES
      MI, MI, FA, SOL, SOL, FA, MI, RE, DO, //ODE A LA JOIE
      MI, FA, SOL, FA, MI, RE, MI, RE, MI, //OLE
-     DO, SOL, FA, DO, MI, MI, RE, DO, SOL, //AU PIF
+     DO, SOL, FA, DO, MI, MI, RE, DO, SOL, //HASARD
      DO, SOL, SOL, FA, RE, FA, SOL, RE, MI, //SUZUKI
      MI, FA, SOL, SOL, MI, SOL, DO, SOL, MI, //FORREST GUMP
-     RE, SOL, FA, DO, MI, SOL, MI, FA, DO, //AU PIF
-     MI, RE, DO, RE, MI, RE, MI, SOL, SOL}; //AU PIF
+     RE, SOL, FA, DO, MI, SOL, MI, FA, DO, //HASARD
+     MI, RE, DO, RE, MI, RE, MI, SOL, SOL}; //HASARD
 
 
 
