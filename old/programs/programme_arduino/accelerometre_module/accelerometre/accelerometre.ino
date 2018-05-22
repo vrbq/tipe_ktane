@@ -69,20 +69,6 @@ void loop(){
     }
   }   
 }
-else if (etape == 2){
-    if (lcd == 1){
-      
-      }
-    if (lcd == 2){
-      
-    }
-    if (lcd == 3){
-      
-    }
-    if (lcd ==4){
-      
-    }   
-  }
  
   /* Display current axis values */
   Serial.print("X: ");    Serial.print(x, DEC);
