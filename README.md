@@ -1,5 +1,5 @@
-## Projet TIPE
-# Bomb Defuse Game ! (based on 'Keep Talking And Nobody Explodes')
+## Bomb Defuse Game ! 
+#(based on 'Keep Talking And Nobody Explodes')
 
 <img src="bomb_defusal_game_v1/circuit/real/global_photo.JPG" width="350" />
 
