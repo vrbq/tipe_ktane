@@ -1,7 +1,7 @@
 ## Projet TIPE
 # Bomb Defuse Game ! (based on 'Keep Talking And Nobody Explodes')
 
-<img src="circuit/real/global_photo.JPG" width="350" />
+<img src="bomb_defusal_game_v1/circuit/real/global_photo.JPG" width="350" />
 
 
 ## Dependencies
@@ -17,7 +17,7 @@
 
 - Global Circuit
 
-<img src="circuit/global_scheme.jpg" width="350" />
+<img src="bomb_defusal_game_v1/circuit/global_scheme.jpg" width="350" />
 
 
 ## Playing
